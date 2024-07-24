@@ -1,8 +1,9 @@
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from "dotenv";
-import datasource from "./config/database";
 import userRouter from './routes/user';
+import { datasource } from "./config/database";
+// import { authentication } from './middlewares/auth';
 
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 라우트 경로 설정
 app.use("/api/user", userRouter);
+// app.get('/token', authentication);
 
 
 // 예제 쿼리 실행 (추후에 삭제)
@@ -29,7 +31,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
 });
 
-app.get("/api/user", async (req: Request, res: Response, next: NextFunction) => {
+app.get("/test", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await datasource.query('SELECT * FROM "user"'); // 테이블 이름에 큰따옴표 사용
     res.json(result);
