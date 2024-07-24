@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from "dotenv";
-import datasource from "./repositories/db";
+import datasource from "./config/database";
 import userRouter from './routes/user';
 
 
