@@ -1,55 +1,42 @@
-export class BadRequest extends Error {
-  status: number;
-  constructor(message: string) {
+import { Request, Response, NextFunction } from 'express';
+import { ValidationError as ClassValidatorError } from 'class-validator';
+
+export class HttpError extends Error {
+  public readonly statuscode: number;
+
+  constructor(message: string, statuscode: number) {
     super(message);
-    this.status = 400;
+    this.statuscode = statuscode;
+    this.name = 'HttpError';
   }
 }
 
-export class Unauthorized extends Error {
-  status: number;
+export class Unauthorized extends HttpError {
   constructor(message: string) {
-    super(message);
-    this.status = 401;
+    super(message, 401);
+    this.name = 'Unauthorized';
   }
 }
 
-export class Forbidden extends Error {
-  status: number;
-  constructor(message: string) {
-    super(message);
-    this.status = 403;
+export class ValidationError extends HttpError {
+  public readonly errors: ClassValidatorError[];
+
+  constructor(errors: ClassValidatorError[]) {
+    super('Validation failed', 400);
+    this.name = 'ValidationError';
+    this.errors = errors;
   }
 }
 
-export class NotFound extends Error {
-  status: number;
-  constructor(message: string) {
-    super(message);
-    this.status = 404;
-  }
-}
-
-export class MethodNotAllowed extends Error {
-  status: number;
-  constructor(message: string) {
-    super(message);
-    this.status = 405;
-  }
-}
-
-export class InternalServerError extends Error {
-  status: number;
-  constructor(message: string) {
-    super(message);
-    this.status = 500;
-  }
-}
-
-export const errorMiddleware = (err: Error, req: any, res: any, next: any) => {
+export const errorMiddleware = (
+  err: HttpError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   console.error(err.stack);
 
-  const status = (err as any).status || 500;
+  const status = err.statuscode || 500;
   const message = err.message || 'Internal Server Error';
 
   res.status(status).json({ status, message });
