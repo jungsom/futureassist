@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class SidoDTO {
@@ -47,4 +47,10 @@ export class SearchHospitalDTO {
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   pageSize?: number = 5;
+}
+
+export class HospitalDetailDTO {
+  @IsString()
+  @IsNotEmpty()
+  hospital_id: string;
 }

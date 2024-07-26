@@ -3,8 +3,9 @@ import {
   getSiguAddrRepository,
   getDongAddrRepository,
   searchHospitalsRepository,
+  getHospitalDetailsRepository,
 } from '../repositories/hospitalRepository';
-import { SearchHospitalDTO } from '../dtos/hospitalDto';
+import { SearchHospitalDTO, HospitalDetailDTO } from '../dtos/hospitalDto';
 import { IHospital } from '../models/hospitalModel';
 
 /** 시도 데이터 조회 서비스 */
@@ -28,19 +29,9 @@ export async function getDongAddr(
   return result.sort((a, b) => a.localeCompare(b));
 }
 
-/** 병원 검색 서비스 */
-export async function searchHospitals(
-  searchParams: SearchHospitalDTO
-): Promise<{
-  data: IHospital[];
-  total: number;
-  page: number;
-  pageSize: number;
-}> {
-  const result = await searchHospitalsRepository(searchParams);
-
-  // 결과 포맷팅
-  const data: IHospital[] = result.map((row) => ({
+/** 포맷팅 함수 */
+function formatHospitalData(result: any[]): IHospital[] {
+  return result.map((row) => ({
     hospital_id: row.hospital_id,
     name: row.name,
     type: row.type,
@@ -72,10 +63,41 @@ export async function searchHospitals(
         specialist_cnt: speciality.specialist_cnt,
       })),
   }));
+}
+
+/** 지역명 선택 기반 병원 검색 서비스 */
+export async function searchHospitals(
+  searchParams: SearchHospitalDTO
+): Promise<{
+  data: IHospital[];
+  total: number;
+  page: number;
+  pageSize: number;
+}> {
+  const result = await searchHospitalsRepository(searchParams);
+
+  // 결과 포맷팅
+  const data: IHospital[] = formatHospitalData(result);
 
   const total = result.length;
   const page = searchParams.page || 1;
   const pageSize = searchParams.pageSize || 5;
 
   return { data, total, page, pageSize };
+}
+
+/** 특정 병원 데이터 조회 서비스 */
+export async function getHospitalDetails(
+  searchParams: HospitalDetailDTO
+): Promise<IHospital> {
+  const result = await getHospitalDetailsRepository(searchParams);
+
+  // 결과 포맷팅
+  const data: IHospital[] = formatHospitalData(result);
+
+  if (data.length === 0) {
+    throw new Error('Hospital not found');
+  }
+
+  return data[0];
 }
