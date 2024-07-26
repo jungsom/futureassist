@@ -8,6 +8,7 @@
   "author": "futureassist_backend",
   "license": "ISC",
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "pg": "^8.12.0",

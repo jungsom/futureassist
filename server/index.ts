@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import datasource from './config/db';
 import userRouter from './routes/user';
+import { errorMiddleware } from './middlewares/error';
 
 dotenv.config();
 
@@ -39,10 +40,7 @@ app.get(
 );
 
 // 에러 처리 미들웨어
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error('에러 발생', err.stack);
-  res.status(500).send('에러 발생');
-});
+app.use(errorMiddleware);
 
 // 서버 시작
 app.listen(port, () => {
