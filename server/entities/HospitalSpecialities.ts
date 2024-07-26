@@ -6,7 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
 } from 'typeorm';
 import { Hospital } from './Hospital';
 
@@ -19,7 +19,7 @@ export class HospitalSpeciality {
   hospital_id: string;
 
   @ManyToOne(() => Hospital, (hospital) => hospital.specialities, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'hospital_id', referencedColumnName: 'hospital_id' })
   hospital: Hospital;
@@ -27,8 +27,8 @@ export class HospitalSpeciality {
   @Column()
   department: string;
 
-  @Column()
-  specialist: string;
+  @Column('int')
+  specialist_cnt: number;
 
   @CreateDateColumn()
   createdAt: Date;

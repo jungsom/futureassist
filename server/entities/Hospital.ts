@@ -5,7 +5,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
 } from 'typeorm';
 import { MedicalDevice } from './MedicalDevices';
 import { HospitalSpeciality } from './HospitalSpecialities';
@@ -25,7 +25,7 @@ export class Hospital {
   telno: string;
 
   @Column({ nullable: true })
-  hospUrl: string;
+  url: string;
 
   @Column()
   addr: string;
@@ -40,10 +40,10 @@ export class Hospital {
   dong_addr: string;
 
   @Column('float', { nullable: true })
-  xPos: number;
+  x_pos: number;
 
   @Column('float', { nullable: true })
-  yPos: number;
+  y_pos: number;
 
   @CreateDateColumn()
   createdAt: Date;
