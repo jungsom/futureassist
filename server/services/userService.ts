@@ -19,7 +19,7 @@ export const generateUser = async (userData: IuserRegister) => {
     await createdUser(user);
     return true;
   } catch (err) {
-    console.error('데이터 생성 실패', err);
+    throw new Error('회원가입 중 오류가 발생했습니다.');
   }
 };
 
@@ -47,20 +47,20 @@ export const generateAccessToken = async (email: string) => {
   return accessToken;
 };
 
-/** 회원 이메일 체크 */
+/** 회원 이메일 중복 체크 */
 export const checkEmail = async (email: string) => {
   try {
     const user = await selectedUser(email);
-    if (user.length > 0) {
+    if (user) {
       throw new Unauthorized('이미 가입되어 있는 회원입니다.');
     }
   } catch (err) {
-    throw err;
+    throw new Unauthorized('이미 가입되어 있는 회원입니다.');
   }
 };
 
-/** 회원 비밀번호 체크 */
-export const checkPassword = async (email: string, password: string) => {
+/** 로그인 체크 */
+export const checkEmailwithPw = async (email: string, password: string) => {
   try {
     const user = await selectedUser(email);
     const correctPassword = await bcrypt.compare(password, user.password);
@@ -68,6 +68,6 @@ export const checkPassword = async (email: string, password: string) => {
       throw new Unauthorized('이메일 혹은 비밀번호를 다시 확인해주세요.');
     }
   } catch (err) {
-    throw err;
+    throw new Unauthorized('이메일 혹은 비밀번호를 다시 확인해주세요.');
   }
 };

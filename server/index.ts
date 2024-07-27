@@ -2,10 +2,9 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import cookieParser from 'cookie-parser';
 
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import userRouter from './routes/user';
 import { errorMiddleware } from './middlewares/error';
-
 dotenv.config();
 
 const app = express();
