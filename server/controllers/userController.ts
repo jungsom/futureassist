@@ -9,7 +9,6 @@ import {
 } from '../services/userService';
 import { CustomRequest } from '../models/jwtModel';
 import { registerDTO, loginDTO } from '../dtos/userDto';
-import { Unauthorized } from '../middlewares/error';
 
 /** 회원가입 컨트롤러 */
 export async function register(

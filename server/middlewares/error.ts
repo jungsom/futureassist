@@ -18,13 +18,10 @@ export class Unauthorized extends HttpError {
   }
 }
 
-export class ValidationError extends HttpError {
-  public readonly errors: ClassValidatorError[];
-
-  constructor(errors: ClassValidatorError[]) {
-    super('Validation failed', 400);
-    this.name = 'ValidationError';
-    this.errors = errors;
+export class BadRequest extends HttpError {
+  constructor(message: string) {
+    super(message, 400);
+    this.name = 'BadRequest';
   }
 }
 

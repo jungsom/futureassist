@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { CustomRequest } from '../models/jwtModel';
 import { OAuth2Client, LoginTicket } from 'google-auth-library';
+import { Unauthorized } from '../middlewares/error';
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export const verifyAccessToken = async (
     (req as CustomRequest).email = decoded;
     next();
   } catch (err) {
-    next(new Error('토큰 인증에 실패하였습니다.'));
+    throw new Unauthorized('토큰 인증에 실패하였습니다.');
   }
 };
 
@@ -36,7 +37,7 @@ export const verifyGoogleToken = async (
     const token = req.cookies.token;
 
     if (!token) {
-      throw new Error('토큰이 없습니다.');
+      throw new Unauthorized('토큰 인증에 실패하였습니다.');
     }
 
     // 구글 액세스 토큰으로 사용자 정보 호출
