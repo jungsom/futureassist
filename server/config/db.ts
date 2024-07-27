@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 import { User } from '../entities/User';
+import { Hospital } from '../entities/Hospital';
+import { MedicalDevice } from '../entities/MedicalDevices';
+import { HospitalSpeciality } from '../entities/HospitalSpecialities';
 
 dotenv.config();
 
@@ -14,7 +17,7 @@ export const datasource = new DataSource({
   synchronize: true, // 개발 중에만 사용, 실제 환경에서는 false로 설정
   logging: false, // 개발 중에만 사용, 실제 환경에서는 false로 설정
   ssl: process.env.SSL === 'true' ? { rejectUnauthorized: false } : false,
-  entities: [User] // 엔티티 클래스 지정
+  entities: [User, Hospital, MedicalDevice, HospitalSpeciality]
 });
 
 // DB 연결

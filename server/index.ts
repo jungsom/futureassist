@@ -2,8 +2,10 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import cookieParser from 'cookie-parser';
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import userRouter from './routes/user';
+import hospitalRouter from './routes/hospital';
 import { errorMiddleware } from './middlewares/error';
 dotenv.config();
 
@@ -11,12 +13,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // 미들웨어 설정
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우트 경로 설정
 app.use('/api/user', userRouter);
+app.use('/api/hospital', hospitalRouter);
 
 // 에러 처리 미들웨어
 app.use(errorMiddleware);

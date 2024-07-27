@@ -1,11 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
+import { MedicalDevice } from './MedicalDevices';
+import { HospitalSpeciality } from './HospitalSpecialities';
 
 @Entity()
 export class Hospital {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+  @PrimaryColumn()
   hospital_id: string;
 
   @Column()
@@ -14,11 +21,11 @@ export class Hospital {
   @Column()
   type: string;
 
-  @Column()
+  @Column({ nullable: true })
   telno: string;
 
-  @Column()
-  hospUrl: string;
+  @Column({ nullable: true })
+  url: string;
 
   @Column()
   addr: string;
@@ -29,12 +36,27 @@ export class Hospital {
   @Column()
   sigu_addr: string;
 
-  @Column()
+  @Column({ nullable: true })
   dong_addr: string;
 
-  @Column()
-  xPos: number;
+  @Column('float', { nullable: true })
+  x_pos: number;
 
-  @Column()
-  yPos: number;
+  @Column('float', { nullable: true })
+  y_pos: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+
+  @OneToMany(() => MedicalDevice, (device) => device.hospital)
+  medicalDevices: MedicalDevice[];
+
+  @OneToMany(() => HospitalSpeciality, (speciality) => speciality.hospital)
+  specialities: HospitalSpeciality[];
 }
