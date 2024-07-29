@@ -7,7 +7,6 @@ import cors from 'cors';
 import userRouter from './routes/user';
 import hospitalRouter from './routes/hospital';
 import { errorMiddleware } from './middlewares/error';
-
 dotenv.config();
 
 const app = express();
