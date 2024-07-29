@@ -47,14 +47,14 @@ export const searchHospitalsRepository = async (
   } = searchParams;
 
   let query = `
-      SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos, 
-             d.id as device_id, d.device_name, d.device_cnt, 
-             s.id as speciality_id, s.department, s.specialist_cnt
-      FROM hospital h
-      LEFT JOIN medical_device d ON h.hospital_id = d.hospital_id
-      LEFT JOIN hospital_speciality s ON h.hospital_id = s.hospital_id
-      WHERE 1=1
-    `;
+    SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos, 
+      array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt)) AS medical_devices, 
+      array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt)) AS specialities
+    FROM hospital h
+    LEFT JOIN medical_device d ON h.hospital_id = d.hospital_id
+    LEFT JOIN hospital_speciality s ON h.hospital_id = s.hospital_id
+    WHERE 1=1
+  `;
   const params: any[] = [];
   let paramIndex = 1;
 
@@ -71,15 +71,15 @@ export const searchHospitalsRepository = async (
     params.push(dong_addr);
   }
   if (name) {
-    query += ` AND h.name ILIKE $${paramIndex++}`;
+    query += ` AND h.name LIKE $${paramIndex++}`;
     params.push(`%${name}%`);
   }
   if (department) {
-    query += ` AND s.department ILIKE $${paramIndex++}`;
+    query += ` AND s.department LIKE $${paramIndex++}`;
     params.push(`%${department}%`);
   }
 
-  query += ` ORDER BY h.name LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
+  query += ` GROUP BY h.hospital_id ORDER BY h.name LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
   params.push(pageSize, (page - 1) * pageSize);
 
   const result = await datasource.query(query, params);
@@ -92,12 +92,13 @@ export const getHospitalDetailsRepository = async (
 ): Promise<any[]> => {
   const query = `
     SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos, 
-           d.id as device_id, d.device_name, d.device_cnt, 
-           s.id as speciality_id, s.department, s.specialist_cnt
+      array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt)) AS medical_devices, 
+      array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt)) AS specialities
     FROM hospital h
     LEFT JOIN medical_device d ON h.hospital_id = d.hospital_id
     LEFT JOIN hospital_speciality s ON h.hospital_id = s.hospital_id
     WHERE h.hospital_id = $1
+    GROUP BY h.hospital_id
   `;
   const params = [searchParams.hospital_id];
 
