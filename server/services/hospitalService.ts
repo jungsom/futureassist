@@ -3,7 +3,7 @@ import {
   getSiguAddrRepository,
   getDongAddrRepository,
   searchHospitalsRepository,
-  getHospitalDetailsRepository,
+  getHospitalDetailsRepository
 } from '../repositories/hospitalRepository';
 import { SearchHospitalDTO, HospitalDetailDTO } from '../dtos/hospitalDto';
 import { IHospital } from '../models/hospitalModel';
@@ -26,7 +26,8 @@ export async function getDongAddr(
   sigu_addr: string
 ): Promise<string[]> {
   const result = await getDongAddrRepository(sido_addr, sigu_addr);
-  return result.sort((a, b) => a.localeCompare(b));
+  const filteredResult = result.filter((dong) => dong !== null);
+  return filteredResult.sort((a, b) => a.localeCompare(b));
 }
 
 /** 지역명 선택 기반 병원 검색 서비스 */

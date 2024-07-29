@@ -1,53 +1,53 @@
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
-import { CustomRequest } from '../models/jwtModel';
-import { OAuth2Client, LoginTicket } from 'google-auth-library';
-import { Unauthorized } from '../middlewares/error';
+// import dotenv from 'dotenv';
+// import jwt from 'jsonwebtoken';
+// import { Request, Response, NextFunction } from 'express';
+// import { CustomRequest } from '../models/jwtModel';
+// import { OAuth2Client, LoginTicket } from 'google-auth-library';
+// import { Unauthorized } from '../middlewares/error';
 
-dotenv.config();
+// dotenv.config();
 
-export const verifyAccessToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const token = req.cookies.token;
-    const publicKey = process.env.PUBLIC_KEY?.replace(/\\n/g, '\n') as string;
-    const decoded = jwt.verify(token, publicKey);
-    (req as CustomRequest).email = decoded;
-    next();
-  } catch (err) {
-    throw new Unauthorized('토큰 인증에 실패하였습니다.');
-  }
-};
+// export const verifyAccessToken = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const token = req.cookies.token;
+//     const publicKey = process.env.PUBLIC_KEY?.replace(/\\n/g, '\n') as string;
+//     const decoded = jwt.verify(token, publicKey);
+//     (req as CustomRequest).email = decoded;
+//     next();
+//   } catch (err) {
+//     throw new Unauthorized('토큰 인증에 실패하였습니다.');
+//   }
+// };
 
-// 미완료 코드
-export const verifyGoogleToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const client = new OAuth2Client(
-      process.env.CLIENT_ID,
-      process.env.CLIENT_SECRET
-    );
-    const token = req.cookies.token;
+// // 미완료 코드
+// export const verifyGoogleToken = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const client = new OAuth2Client(
+//       process.env.CLIENT_ID,
+//       process.env.CLIENT_SECRET
+//     );
+//     const token = req.cookies.token;
 
-    if (!token) {
-      throw new Unauthorized('토큰 인증에 실패하였습니다.');
-    }
+//     if (!token) {
+//       throw new Unauthorized('토큰 인증에 실패하였습니다.');
+//     }
 
-    // 구글 액세스 토큰으로 사용자 정보 호출
+//     // 구글 액세스 토큰으로 사용자 정보 호출
 
-    const ticket = await client.getTokenInfo(token);
-    console.log(ticket);
-  } catch (err) {
-    next(err);
-  }
-};
+//     const ticket = await client.getTokenInfo(token);
+//     console.log(ticket);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 // export const verifyGoogleToken = async (
 //   req: Request,
