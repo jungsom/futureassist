@@ -4,8 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
+  OneToMany
 } from 'typeorm';
+import { Hospital } from './Hospital';
+import { HealthRecords } from './HealthRecord';
 
 @Entity()
 export class User {
@@ -24,12 +27,15 @@ export class User {
   @Column({ nullable: true })
   birth_year: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
+
+  @OneToMany(() => HealthRecords, (health) => health.user)
+  health: HealthRecords[];
 }

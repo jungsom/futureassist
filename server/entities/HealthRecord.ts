@@ -5,7 +5,8 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
+  ManyToOne
 } from 'typeorm';
 import { User } from './User';
 
@@ -14,8 +15,8 @@ export class HealthRecords {
   @PrimaryGeneratedColumn()
   health_id: number;
 
-  @OneToMany((type) => User, (user) => user.user_id)
-  user_id: User[];
+  @ManyToOne(() => User, (user) => user.health)
+  user: User;
 
   @Column({ nullable: true })
   weight: number;
@@ -29,12 +30,12 @@ export class HealthRecords {
   @Column({ nullable: true })
   cholesterol: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt?: Date;
 }

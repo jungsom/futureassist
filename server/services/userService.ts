@@ -124,6 +124,7 @@ export const changeUserInfo = async (userId: number, data: Iuser) => {
 export const checkWithDrawed = async (data: Iuser) => {
   try {
     const user = await selectedByDeletedAt(data.email);
+
     if (user) {
       throw new Error('이미 탈퇴한 회원입니다.');
     }

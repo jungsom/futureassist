@@ -42,7 +42,7 @@ export const deleteUser = async (user: User) => {
 export const selectedByDeletedAt = async (email: string) => {
   try {
     const result = await datasource.query(
-      'SELECT * FROM "user" WHERE email = $1 AND deletedAt IS NOT NULL',
+      'SELECT * FROM "user" WHERE email = $1 AND deleted_at IS NOT NULL',
       [email]
     );
     return result[0];

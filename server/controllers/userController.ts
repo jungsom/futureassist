@@ -45,7 +45,7 @@ export async function register(
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     await checkEmailwithPw(req.body);
-    // await checkWithDrawed(req.body);
+    await checkWithDrawed(req.body);
 
     const accessToken = await generateAccessToken(req.body);
     setCookie(res, 'token', accessToken);
@@ -77,7 +77,6 @@ export async function updateUser(
     const userId = (req as CustomRequest).user_id;
     const user = await changeUserInfo(userId, req.body);
 
-    // await checkWithDrawed(user);
     await createdUser(user);
 
     return res.status(201).json({ message: '수정이 완료되었습니다.' });
