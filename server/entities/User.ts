@@ -15,13 +15,13 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column()
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   birth_year: number;
 
   @CreateDateColumn()

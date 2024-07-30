@@ -52,8 +52,10 @@ export const searchHospitalsRepository = async (
 
   let query = `
     SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos, 
-      array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt)) AS medical_devices, 
-      array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt)) AS specialities
+      COALESCE(array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt))
+        FILTER (WHERE d.device_name IS NOT NULL), '{}'::jsonb[]) AS medical_devices, 
+      COALESCE(array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt))
+        FILTER (WHERE s.department IS NOT NULL), '{}'::jsonb[]) AS specialities
     FROM hospital h
     LEFT JOIN medical_device d ON h.hospital_id = d.hospital_id
     LEFT JOIN hospital_speciality s ON h.hospital_id = s.hospital_id
@@ -105,8 +107,10 @@ export const searchHospitalsByLocationRepository = async (
 
   let query = `
     SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos,
-      array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt)) AS medical_devices,
-      array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt)) AS specialities,
+      COALESCE(array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt))
+        FILTER (WHERE d.device_name IS NOT NULL), '{}'::jsonb[]) AS medical_devices, 
+      COALESCE(array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt))
+        FILTER (WHERE s.department IS NOT NULL), '{}'::jsonb[]) AS specialities
       ST_Distance(h.geom, ST_SetSRID(ST_MakePoint($1, $2), 4326)) AS distance
     FROM hospital h
     LEFT JOIN medical_device d ON h.hospital_id = d.hospital_id
@@ -135,8 +139,10 @@ export const getHospitalDetailsRepository = async (
 ): Promise<any[]> => {
   const query = `
     SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos, 
-      array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt)) AS medical_devices, 
-      array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt)) AS specialities
+      COALESCE(array_agg(DISTINCT jsonb_build_object('id', d.id, 'device_name', d.device_name, 'device_cnt', d.device_cnt))
+        FILTER (WHERE d.device_name IS NOT NULL), '{}'::jsonb[]) AS medical_devices, 
+      COALESCE(array_agg(DISTINCT jsonb_build_object('id', s.id, 'department', s.department, 'specialist_cnt', s.specialist_cnt))
+        FILTER (WHERE s.department IS NOT NULL), '{}'::jsonb[]) AS specialities
     FROM hospital h
     LEFT JOIN medical_device d ON h.hospital_id = d.hospital_id
     LEFT JOIN hospital_speciality s ON h.hospital_id = s.hospital_id

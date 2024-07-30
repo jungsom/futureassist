@@ -40,3 +40,11 @@ export class loginDTO {
   @Length(8)
   public password: string;
 }
+
+export class userDto {
+  public user_id: number;
+  public email: string;
+  public name: string;
+  public password: string;
+  public birth_year: number;
+}
