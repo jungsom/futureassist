@@ -3,9 +3,14 @@ import {
   getSiguAddrRepository,
   getDongAddrRepository,
   searchHospitalsRepository,
+  searchHospitalsByLocationRepository,
   getHospitalDetailsRepository
 } from '../repositories/hospitalRepository';
-import { SearchHospitalDTO, HospitalDetailDTO } from '../dtos/hospitalDto';
+import {
+  SearchHospitalDTO,
+  LocationDTO,
+  HospitalDetailDTO
+} from '../dtos/hospitalDto';
 import { IHospital } from '../models/hospitalModel';
 
 /** 시도 데이터 조회 서비스 */
@@ -44,6 +49,24 @@ export async function searchHospitals(
   const total = result.length;
   const page = searchParams.page || 1;
   const pageSize = searchParams.pageSize || 5;
+
+  return { data: result, total, page, pageSize };
+}
+
+/** 위치 기반 병원 검색 서비스 */
+export async function searchHospitalsByLocation(
+  locationParams: LocationDTO
+): Promise<{
+  data: IHospital[];
+  total: number;
+  page: number;
+  pageSize: number;
+}> {
+  const result = await searchHospitalsByLocationRepository(locationParams);
+
+  const total = result.length;
+  const page = locationParams.page || 1;
+  const pageSize = locationParams.pageSize || 5;
 
   return { data: result, total, page, pageSize };
 }

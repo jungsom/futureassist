@@ -5,7 +5,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
+  DeleteDateColumn
 } from 'typeorm';
 import { MedicalDevice } from './MedicalDevices';
 import { HospitalSpeciality } from './HospitalSpecialities';
@@ -44,6 +44,13 @@ export class Hospital {
 
   @Column('float', { nullable: true })
   y_pos: number;
+
+  @Column('geography', {
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true
+  })
+  geom: string;
 
   @CreateDateColumn()
   createdAt: Date;
