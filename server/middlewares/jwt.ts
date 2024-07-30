@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { CustomRequest, JwtPayload } from '../models/jwtModel';
-import { OAuth2Client, LoginTicket } from 'google-auth-library';
+//import { OAuth2Client, LoginTicket } from 'google-auth-library';
 import { Unauthorized } from '../middlewares/error';
 import { error } from 'console';
 
