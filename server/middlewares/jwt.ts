@@ -19,8 +19,9 @@ export const verifyAccessToken = async (
     const decoded = jwt.verify(token, publicKey) as JwtPayload;
 
     (req as CustomRequest).user_id = decoded.user_id;
+    res.status(200).json('토큰 인증에 성공하였습니다.');
     next();
   } catch (err) {
-    throw err;
+    next(err);
   }
 };
