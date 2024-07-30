@@ -4,6 +4,7 @@ import { User } from '../entities/User';
 import { Hospital } from '../entities/Hospital';
 import { MedicalDevice } from '../entities/MedicalDevices';
 import { HospitalSpeciality } from '../entities/HospitalSpecialities';
+import { HealthRecords } from '../entities/HealthRecord';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ export const datasource = new DataSource({
   synchronize: true, // 개발 중에만 사용, 실제 환경에서는 false로 설정
   logging: false, // 개발 중에만 사용, 실제 환경에서는 false로 설정
   ssl: process.env.SSL === 'true' ? { rejectUnauthorized: false } : false,
-  entities: [User, Hospital, MedicalDevice, HospitalSpeciality]
+  entities: [User, Hospital, MedicalDevice, HospitalSpeciality, HealthRecords]
 });
 
 // DB 연결

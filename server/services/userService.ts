@@ -1,30 +1,36 @@
-import { Iuser, IuserLogin } from '../models/userModel';
+import { Iuser } from '../models/userModel';
 import { User } from '../entities/User';
 import {
   createdUser,
   selectedByEmail,
   selectedById,
-  deleteUser
+  deleteUser,
+  selectedByDeletedAt
 } from '../repositories/userRepo';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import axios from 'axios';
+
+import { Response } from 'express';
 import { Unauthorized, BadRequest } from '../middlewares/error';
 
+dotenv.config();
+
 /** 회원가입 정보 생성 */
-export const generateUser = async (userData: Iuser) => {
+export const generateUserInfo = async (data: Iuser) => {
   try {
-    const hashedPassword = await generatePassword(userData.password);
+    const hashedPassword = await generatePassword(data.password);
 
     const user = new User();
-    user.email = userData.email;
-    user.name = userData.name;
+    user.email = data.email;
+    user.name = data.name;
     user.password = hashedPassword;
-    user.birth_year = userData.birth_year;
+    user.birth_year = data.birth_year;
 
-    await createdUser(user);
-    return true;
+    return user;
   } catch (err) {
-    throw new Error('회원가입 중 오류가 발생했습니다.');
+    throw err;
   }
 };
 
@@ -35,14 +41,14 @@ export const generatePassword = async (password: string) => {
 };
 
 /** 액세스 토큰 생성 (7일) */
-export const generateAccessToken = async (email: string, user_id: number) => {
+export const generateAccessToken = async (data: Iuser) => {
   try {
     const privateKey = process.env.PRIVATE_KEY?.replace(/\\n/g, '\n') as string;
     const accessToken = jwt.sign(
       {
         type: 'JWT',
-        user_id,
-        email
+        user_id: data.user_id,
+        email: data.email
       },
       privateKey,
       {
@@ -57,10 +63,24 @@ export const generateAccessToken = async (email: string, user_id: number) => {
   }
 };
 
+/** 쿠키 생성 (7일) */
+export const setCookie = (
+  res: Response,
+  name: string,
+  value: string,
+  maxAge: number = 30 * 60 * 1000
+) => {
+  res.cookie(name, value, {
+    maxAge,
+    secure: process.env.NODE_ENV === 'production'
+  });
+};
+
 /** 회원 이메일 중복 체크 */
-export const checkEmail = async (email: string) => {
+export const checkEmail = async (data: Iuser) => {
   try {
-    const user = await selectedByEmail(email);
+    const user = await selectedByEmail(data.email);
+    console.log(user);
     if (user) {
       throw new BadRequest('이미 가입되어 있는 회원입니다.');
     }
@@ -70,10 +90,10 @@ export const checkEmail = async (email: string) => {
 };
 
 /** 로그인 체크 */
-export const checkEmailwithPw = async (email: string, password: string) => {
+export const checkEmailwithPw = async (data: Iuser) => {
   try {
-    const user = await selectedByEmail(email);
-    const correctPassword = await bcrypt.compare(password, user.password);
+    const user = await selectedByEmail(data.email);
+    const correctPassword = await bcrypt.compare(data.email, user.password);
     if (correctPassword || user) {
       return user;
     }
@@ -83,28 +103,37 @@ export const checkEmailwithPw = async (email: string, password: string) => {
 };
 
 /** 기존 회원 정보 생성 */
-export const changeUserInfo = async (userId: number, userData: Iuser) => {
+export const changeUserInfo = async (userId: number, data: Iuser) => {
   try {
-    const hashedPassword = await generatePassword(userData.password);
+    const hashedPassword = await generatePassword(data.password);
 
     const user = new User();
     user.user_id = userId;
-    user.email = userData.email;
-    user.name = userData.name;
+    user.email = data.email;
+    user.name = data.name;
     user.password = hashedPassword;
-    user.birth_year = userData.birth_year;
+    user.birth_year = data.birth_year;
 
-    await createdUser(user);
-    return true;
+    return user;
   } catch (err) {
     throw err;
   }
 };
 
-// 페이지 이동할때마다 토큰 인증 => 유저가 로그인되어있는지 토큰 확인
-
 /** 탈퇴 회원 체크 */
+export const checkWithDrawed = async (data: Iuser) => {
+  try {
+    const user = await selectedByDeletedAt(data.email);
 
+    if (user) {
+      throw new Error('이미 탈퇴한 회원입니다.');
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+/** 카카오 회원 등록 */
 export const generateKakao = async (kakaoData: any) => {
   try {
     const user = new User();
@@ -116,6 +145,46 @@ export const generateKakao = async (kakaoData: any) => {
 
     const result = await createdUser(user);
     return result;
+  } catch (err) {
+    throw err;
+  }
+};
+
+/** 카카오 인가코드를 토큰으로 변환 */
+export const CodeToKakao = async (code: any) => {
+  try {
+    const data = await axios(
+      `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.REDIRECT_URL}&code=${code}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+      }
+    );
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+/** 카카오 토큰을 jwt로 재발급 */
+export const kakaoToJwt = async (data: any) => {
+  try {
+    const token = data.data.access_token;
+    const kakao = await axios(`https://kapi.kakao.com/v2/user/me`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    await checkEmail(kakao.data.kakao_account.email);
+    const kakaoUser = await generateKakao(kakao);
+    console.log(kakaoUser);
+
+    return await generateAccessToken(kakaoUser);
   } catch (err) {
     throw err;
   }
