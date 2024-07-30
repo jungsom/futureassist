@@ -3,6 +3,7 @@ import {
   getSidoAddr,
   getSiguAddr,
   getDongAddr,
+  getSpecialities,
   searchHospitals,
   searchHospitalsByLocation,
   getHospitalDetails
@@ -60,6 +61,20 @@ export async function getDong(req: Request, res: Response, next: NextFunction) {
       locationParams.sido_addr,
       locationParams.sigu_addr
     );
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+/** 진료과명 조회 컨트롤러 */
+export async function getSpeciality(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const result = await getSpecialities();
     return res.status(200).json(result);
   } catch (err) {
     next(err);

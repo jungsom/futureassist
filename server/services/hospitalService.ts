@@ -2,6 +2,7 @@ import {
   getSidoAddrRepository,
   getSiguAddrRepository,
   getDongAddrRepository,
+  getSpecialityRepository,
   searchHospitalsRepository,
   searchHospitalsByLocationRepository,
   getHospitalDetailsRepository
@@ -33,6 +34,12 @@ export async function getDongAddr(
   const result = await getDongAddrRepository(sido_addr, sigu_addr);
   const filteredResult = result.filter((dong) => dong !== null);
   return filteredResult.sort((a, b) => a.localeCompare(b));
+}
+
+/** 진료과명 조회 서비스 */
+export async function getSpecialities(): Promise<string[]> {
+  const result = await getSpecialityRepository();
+  return result.sort((a, b) => a.localeCompare(b));
 }
 
 /** 지역명 선택 기반 병원 검색 서비스 */

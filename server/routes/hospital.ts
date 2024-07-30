@@ -3,6 +3,7 @@ import {
   getSido,
   getSigu,
   getDong,
+  getSpeciality,
   searchHospital,
   getHospitalsByLocation,
   getHospitalDetail
@@ -13,6 +14,7 @@ const router = Router();
 router.get('/sido', getSido);
 router.get('/sigu', getSigu);
 router.get('/dong', getDong);
+router.get('/specialities', getSpeciality);
 router.get('/search', searchHospital);
 router.get('/location', getHospitalsByLocation);
 router.get('/detaileddata', getHospitalDetail);

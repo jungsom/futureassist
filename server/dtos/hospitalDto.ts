@@ -23,6 +23,12 @@ export class SiguDTO {
   sigu_addr: string;
 }
 
+export class SpecialityDTO {
+  @IsString()
+  @IsNotEmpty()
+  department: string;
+}
+
 export class SearchHospitalDTO {
   @IsOptional()
   @IsString()

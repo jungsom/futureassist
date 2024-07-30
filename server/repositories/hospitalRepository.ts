@@ -36,6 +36,14 @@ export const getDongAddrRepository = async (
   return result.map((row: { dong_addr: string }) => row.dong_addr);
 };
 
+/** 진료과명 조회 리포지토리 */
+export const getSpecialityRepository = async (): Promise<string[]> => {
+  const result = await datasource.query(
+    `SELECT DISTINCT department FROM hospital_speciality`
+  );
+  return result.map((row: { department: string }) => row.department);
+};
+
 /** 지역명 선택 기반 병원 검색 리포지토리 */
 export const searchHospitalsRepository = async (
   searchParams: SearchHospitalDTO
