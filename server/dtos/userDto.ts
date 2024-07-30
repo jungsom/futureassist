@@ -5,7 +5,9 @@ import {
   Length,
   IsEmail,
   Min,
-  Max
+  Max,
+  IsOptional,
+  IsDate
 } from 'class-validator';
 
 export class registerDTO {
@@ -29,6 +31,8 @@ export class registerDTO {
   @Min(1900)
   @Max(2010)
   public birth_year: number;
+
+  public deletedAt?: Date;
 }
 
 export class loginDTO {
@@ -39,6 +43,7 @@ export class loginDTO {
   @IsNotEmpty()
   @Length(8)
   public password: string;
+  public deletedAt?: Date;
 }
 
 export class userDto {
@@ -47,4 +52,5 @@ export class userDto {
   public name: string;
   public password: string;
   public birth_year: number;
+  public deletedAt?: Date;
 }

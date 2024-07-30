@@ -6,7 +6,7 @@ export const createdUser = async (user: User) => {
     const userRepository = datasource.getRepository(User);
     return await userRepository.save(user);
   } catch (err) {
-    throw new Error('데이터 저장 중 오류가 발생했습니다.');
+    throw err;
   }
 };
 
@@ -18,7 +18,7 @@ export const selectedByEmail = async (email: string) => {
     );
     return result[0];
   } catch (err) {
-    throw new Error('데이터 조회 중 오류가 발생했습니다.');
+    throw err;
   }
 };
 
@@ -39,14 +39,14 @@ export const deleteUser = async (user: User) => {
   return await userRepository.softRemove(user);
 };
 
-export const selectedByDeletedAt = async (id: number) => {
+export const selectedByDeletedAt = async (email: string) => {
   try {
     const result = await datasource.query(
-      'SELECT * FROM "user" WHERE user_id = $1 AND deletedAt IS NOT NULL',
-      [id]
+      'SELECT * FROM "user" WHERE email = $1 AND deletedAt IS NOT NULL',
+      [email]
     );
     return result[0];
   } catch (err) {
-    throw new Error('데이터 조회 중 오류가 발생했습니다.');
+    throw err;
   }
 };
