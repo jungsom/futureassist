@@ -11,7 +11,6 @@ import { verifyAccessToken } from '../middlewares/jwt';
 
 const userRouter = express.Router();
 
-// userRouter.get('/kakao', kakaoLogin);
 userRouter.post('/register', register);
 userRouter.post('/login', login);
 userRouter.post('/kakao', kakaoLogin);

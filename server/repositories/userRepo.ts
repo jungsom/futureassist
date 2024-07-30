@@ -38,3 +38,15 @@ export const deleteUser = async (user: User) => {
   const userRepository = datasource.getRepository(User);
   return await userRepository.softRemove(user);
 };
+
+export const selectedByDeletedAt = async (id: number) => {
+  try {
+    const result = await datasource.query(
+      'SELECT * FROM "user" WHERE user_id = $1 AND deletedAt IS NOT NULL',
+      [id]
+    );
+    return result[0];
+  } catch (err) {
+    throw new Error('데이터 조회 중 오류가 발생했습니다.');
+  }
+};

@@ -4,7 +4,8 @@ import {
   createdUser,
   selectedByEmail,
   selectedById,
-  deleteUser
+  deleteUser,
+  selectedByDeletedAt
 } from '../repositories/userRepo';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -61,6 +62,7 @@ export const generateAccessToken = async (email: string, user_id: number) => {
 export const checkEmail = async (email: string) => {
   try {
     const user = await selectedByEmail(email);
+    console.log(user);
     if (user) {
       throw new BadRequest('이미 가입되어 있는 회원입니다.');
     }
@@ -104,6 +106,16 @@ export const changeUserInfo = async (userId: number, userData: Iuser) => {
 // 페이지 이동할때마다 토큰 인증 => 유저가 로그인되어있는지 토큰 확인
 
 /** 탈퇴 회원 체크 */
+export const checkWithDrawed = async (userId: number) => {
+  try {
+    const user = await selectedByDeletedAt(userId);
+    if (user) {
+      throw new Error('이미 탈퇴한 회원입니다.');
+    }
+  } catch (err) {
+    throw new Error('이미 탈퇴한 회원입니다.');
+  }
+};
 
 export const generateKakao = async (kakaoData: any) => {
   try {

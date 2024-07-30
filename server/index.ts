@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우트 경로 설정
-app.get('/auth', verifyAccessToken);
+app.use('/auth', verifyAccessToken);
 app.use('/api/user', userRouter);
 app.use('/api/hospital', hospitalRouter);
 

@@ -24,5 +24,3 @@ export const verifyAccessToken = async (
     throw err;
   }
 };
-
-export const verifyKaKaoToken = async () => {};

@@ -8,7 +8,8 @@ import {
   checkEmail,
   checkEmailwithPw,
   changeUserInfo,
-  generateKakao
+  generateKakao,
+  checkWithDrawed
 } from '../services/userService';
 import { CustomRequest, JwtPayload } from '../models/jwtModel';
 import { registerDTO, loginDTO, userDto } from '../dtos/userDto';
@@ -31,6 +32,7 @@ export async function register(
   try {
     const user = Object.assign(new registerDTO(), req.body);
     await checkEmail(user.email);
+    await checkWithDrawed(user.user_id);
 
     const errors = await validate(user);
     console.log(errors);
@@ -58,6 +60,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     const user = await checkEmailwithPw(data.email, data.password);
 
+    await checkWithDrawed(user.user_id);
+
     const accessToken = await generateAccessToken(user.email, user.user_id);
     res.cookie('token', accessToken, {
       maxAge: 30 * 60 * 1000
@@ -74,6 +78,8 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
   try {
     res.clearCookie('token');
 
+    checkWithDrawed;
+
     return res.status(200).json({ message: '로그아웃이 완료되었습니다.' });
   } catch (err) {
     next(err);
@@ -88,15 +94,12 @@ export async function updateUser(
 ) {
   try {
     const userId = (req as CustomRequest).user_id;
-    console.log(userId);
     const user = Object.assign(new userDto(), req.body);
-    console.log(user);
-
     const errors = await validate(user);
-
     if (errors.length > 0) {
       throw new Error('유효성 검사 실패'); //메시지 보는법, 에러처리하는 법
     }
+    await checkWithDrawed(user.user_id);
 
     await changeUserInfo(userId, user);
 
@@ -124,7 +127,6 @@ export async function withDraw(
 }
 
 // 토큰 재발급 함수
-// 탈퇴 후 다른곳에 재접근 x하도록
 
 // 카카오 액세스 토큰 발급
 export async function kakaoLogin(
