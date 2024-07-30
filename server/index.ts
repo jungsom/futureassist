@@ -7,6 +7,7 @@ import cors from 'cors';
 import userRouter from './routes/user';
 import hospitalRouter from './routes/hospital';
 import { errorMiddleware } from './middlewares/error';
+import { verifyAccessToken } from './middlewares/jwt';
 dotenv.config();
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우트 경로 설정
+app.get('/auth', verifyAccessToken);
 app.use('/api/user', userRouter);
 app.use('/api/hospital', hospitalRouter);
 

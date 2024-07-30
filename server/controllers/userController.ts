@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { validate } from 'class-validator';
+import dotenv from 'dotenv';
 
 import {
   generateUser,
   generateAccessToken,
   checkEmail,
   checkEmailwithPw,
-  changeUserInfo
+  changeUserInfo,
+  generateKakao
 } from '../services/userService';
 import { CustomRequest, JwtPayload } from '../models/jwtModel';
 import { registerDTO, loginDTO, userDto } from '../dtos/userDto';
@@ -16,6 +18,9 @@ import {
   selectedById,
   deleteUser
 } from '../repositories/userRepo';
+import axios from 'axios';
+
+dotenv.config();
 
 /** 회원가입 컨트롤러 */
 export async function register(
@@ -75,7 +80,6 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// 특정 회원 정보? or 토큰을 통한 회원 정보?
 /** 회원수정 컨트롤러 */
 export async function updateUser(
   req: Request,
@@ -121,3 +125,47 @@ export async function withDraw(
 
 // 토큰 재발급 함수
 // 탈퇴 후 다른곳에 재접근 x하도록
+
+// 카카오 액세스 토큰 발급
+export async function kakaoLogin(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const code = req.query.code;
+  console.log(code);
+  try {
+    const data = await axios(
+      `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.REDIRECT_URL}&code=${code}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+      }
+    );
+    const result = await kakaoToJwt(data);
+    console.log(data.data);
+    console.log(result);
+    res.status(200).json('카카오 로그인이 완료되었습니다.');
+  } catch (err) {
+    throw err;
+  }
+}
+
+export const kakaoToJwt = async (data: any) => {
+  const token = data.data.access_token;
+  const kakao = await axios(`https://kapi.kakao.com/v2/user/me`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  await checkEmail(kakao.data.kakao_account.email);
+  const kakaoUser = await generateKakao(kakao);
+  console.log(kakaoUser);
+
+  await generateAccessToken(kakaoUser.email, kakaoUser.user_id);
+};

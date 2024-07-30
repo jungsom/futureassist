@@ -100,3 +100,23 @@ export const changeUserInfo = async (userId: number, userData: Iuser) => {
     throw err;
   }
 };
+
+// 페이지 이동할때마다 토큰 인증 => 유저가 로그인되어있는지 토큰 확인
+
+/** 탈퇴 회원 체크 */
+
+export const generateKakao = async (kakaoData: any) => {
+  try {
+    const user = new User();
+    user.email = kakaoData.data.kakao_account.email;
+    user.name = kakaoData.data.properties.nickname;
+
+    console.log(user.email);
+    console.log(user.name);
+
+    const result = await createdUser(user);
+    return result;
+  } catch (err) {
+    throw err;
+  }
+};
