@@ -3,14 +3,17 @@ import {
   getSidoAddr,
   getSiguAddr,
   getDongAddr,
+  getSpecialities,
   searchHospitals,
-  getHospitalDetails,
+  searchHospitalsByLocation,
+  getHospitalDetails
 } from '../services/hospitalService';
 import {
   SidoDTO,
   SiguDTO,
   SearchHospitalDTO,
-  HospitalDetailDTO,
+  LocationDTO,
+  HospitalDetailDTO
 } from '../dtos/hospitalDto';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
@@ -64,6 +67,20 @@ export async function getDong(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/** 진료과명 조회 컨트롤러 */
+export async function getSpeciality(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const result = await getSpecialities();
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 /** 지역명 선택 기반 병원 검색 컨트롤러 */
 export async function searchHospital(
   req: Request,
@@ -80,6 +97,28 @@ export async function searchHospital(
     }
 
     const result = await searchHospitals(searchParams);
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+/** 위치 기반 병원 검색 컨트롤러 */
+export async function getHospitalsByLocation(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const locationParams = plainToClass(LocationDTO, req.query);
+
+    // 유효성 검사
+    const errors = await validate(locationParams);
+    if (errors.length > 0) {
+      return res.status(400).json(errors);
+    }
+
+    const result = await searchHospitalsByLocation(locationParams);
     return res.status(200).json(result);
   } catch (err) {
     next(err);

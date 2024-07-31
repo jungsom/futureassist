@@ -1,18 +1,3 @@
-export interface ISido {
-  sido_addr: string;
-}
-
-export interface ISigu {
-  sido_addr: string;
-  sigu_addr: string;
-}
-
-export interface IDong {
-  sido_addr: string;
-  sigu_addr: string;
-  dong_addr: string;
-}
-
 export interface IHospital {
   hospital_id: string;
   name: string;
@@ -27,6 +12,7 @@ export interface IHospital {
   y_pos?: number;
   medicalDevices: IMedicalDevice[];
   specialities: IHospitalSpeciality[];
+  distance?: number;
 }
 
 export interface IMedicalDevice {

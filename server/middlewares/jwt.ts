@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import { CustomRequest, JwtPayload } from '../models/jwtModel';
 import { Unauthorized } from '../middlewares/error';
 
-dotenv.config();
+// dotenv.config();
 
 export const verifyAccessToken = async (
   req: Request,
