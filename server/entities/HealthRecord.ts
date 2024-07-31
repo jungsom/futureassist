@@ -2,30 +2,36 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToMany
+  ManyToOne
 } from 'typeorm';
-import { Hospital } from './Hospital';
-import { HealthRecords } from './HealthRecord';
+import { User } from './User';
 
 @Entity()
-export class User {
+export class HealthRecords {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  health_id: number;
 
-  @Column()
-  name: string;
-
-  @Column({ nullable: true })
-  password: string;
-
-  @Column()
-  email: string;
+  @ManyToOne(() => User, (user) => user.health)
+  user: User;
 
   @Column({ nullable: true })
-  birth_year: number;
+  weight: number;
+
+  @Column({ nullable: true })
+  height: number;
+
+  @Column({ nullable: true })
+  bloodsugar: number;
+
+  @Column({ nullable: true })
+  bloodPressure: number;
+
+  @Column({ nullable: true })
+  cholesterol: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -35,7 +41,4 @@ export class User {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
-
-  @OneToMany(() => HealthRecords, (health) => health.user)
-  health: HealthRecords[];
 }

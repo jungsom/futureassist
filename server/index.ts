@@ -11,16 +11,21 @@ import { verifyAccessToken } from './middlewares/jwt';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 // 미들웨어 설정
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000/',
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우트 경로 설정
-app.get('/auth', verifyAccessToken);
+app.use('/auth', verifyAccessToken);
 app.use('/api/user', userRouter);
 app.use('/api/hospital', hospitalRouter);
 

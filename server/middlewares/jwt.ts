@@ -2,9 +2,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { CustomRequest, JwtPayload } from '../models/jwtModel';
-//import { OAuth2Client, LoginTicket } from 'google-auth-library';
 import { Unauthorized } from '../middlewares/error';
-import { error } from 'console';
 
 dotenv.config();
 
@@ -19,10 +17,9 @@ export const verifyAccessToken = async (
     const decoded = jwt.verify(token, publicKey) as JwtPayload;
 
     (req as CustomRequest).user_id = decoded.user_id;
+    res.status(200).json('토큰 인증에 성공하였습니다.');
     next();
   } catch (err) {
-    throw err;
+    next(err);
   }
 };
-
-export const verifyKaKaoToken = async () => {};
