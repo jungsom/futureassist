@@ -53,21 +53,20 @@ export class SearchHospitalDTO {
   @IsOptional()
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
-  page?: number = 1;
+  pageSize?: number = 5;
 
   @IsOptional()
-  @IsInt()
-  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
-  pageSize?: number = 5;
+  @IsString()
+  nextCursor?: string;
 }
 
 export class LocationDTO {
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   longitude: number;
 
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   latitude: number;
 
   @IsOptional()
@@ -82,12 +81,11 @@ export class LocationDTO {
   @IsOptional()
   @IsInt()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
-  page?: number = 1;
+  pageSize?: number = 5;
 
   @IsOptional()
-  @IsInt()
-  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
-  pageSize?: number = 5;
+  @IsString()
+  nextCursor?: string;
 }
 
 export class HospitalDetailDTO {

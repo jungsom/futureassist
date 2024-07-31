@@ -12,6 +12,7 @@ export interface IHospital {
   y_pos?: number;
   medicalDevices: IMedicalDevice[];
   specialities: IHospitalSpeciality[];
+  distance?: number;
 }
 
 export interface IMedicalDevice {

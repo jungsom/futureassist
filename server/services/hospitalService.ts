@@ -48,16 +48,16 @@ export async function searchHospitals(
 ): Promise<{
   data: IHospital[];
   total: number;
-  page: number;
-  pageSize: number;
+  nextCursor: string | null;
 }> {
-  const result = await searchHospitalsRepository(searchParams);
+  const { result, total } = await searchHospitalsRepository(searchParams);
 
-  const total = result.length;
-  const page = searchParams.page || 1;
-  const pageSize = searchParams.pageSize || 5;
+  const nextCursorValue =
+    result.length === searchParams.pageSize
+      ? `${result[result.length - 1].name}_${result[result.length - 1].hospital_id}`
+      : null;
 
-  return { data: result, total, page, pageSize };
+  return { data: result, total, nextCursor: nextCursorValue };
 }
 
 /** 위치 기반 병원 검색 서비스 */
@@ -66,16 +66,17 @@ export async function searchHospitalsByLocation(
 ): Promise<{
   data: IHospital[];
   total: number;
-  page: number;
-  pageSize: number;
+  nextCursor: string | null;
 }> {
-  const result = await searchHospitalsByLocationRepository(locationParams);
+  const { result, total } =
+    await searchHospitalsByLocationRepository(locationParams);
 
-  const total = result.length;
-  const page = locationParams.page || 1;
-  const pageSize = locationParams.pageSize || 5;
+  const nextCursorValue =
+    result.length === locationParams.pageSize
+      ? `${result[result.length - 1].distance}_${result[result.length - 1].hospital_id}`
+      : null;
 
-  return { data: result, total, page, pageSize };
+  return { data: result, total, nextCursor: nextCursorValue };
 }
 
 /** 특정 병원 데이터 조회 서비스 */
