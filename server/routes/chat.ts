@@ -4,7 +4,7 @@ import { verifyAccessToken } from '../middlewares/jwt';
 
 const router = Router();
 
-// router.post('/', getChat);
-router.post('/', verifyAccessToken, getChat);
+router.post('/', getChat);
+// router.post('/', verifyAccessToken, getChat);
 
 export default router;
