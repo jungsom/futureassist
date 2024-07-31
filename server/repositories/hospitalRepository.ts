@@ -2,9 +2,10 @@ import { datasource } from '../config/db';
 import {
   SearchHospitalDTO,
   LocationDTO,
-  HospitalDetailDTO
+  HospitalIdDTO
 } from '../dtos/hospitalDto';
-import { IHospital } from '../models/hospitalModel';
+import { HospitalRecord } from '../entities/HospitalRecord';
+import { IHospital, IHospitalRecord } from '../models/hospitalModel';
 
 /** 시도 데이터 조회 리포지토리 */
 export const getSidoAddrRepository = async (): Promise<string[]> => {
@@ -90,7 +91,12 @@ export const searchHospitalsRepository = async (
     params.push(`%${name}%`);
   }
   if (department) {
-    query += ` AND s.department = $${paramIndex++}`;
+    query += ` AND EXISTS (
+      SELECT 1
+      FROM hospital_speciality hs
+      WHERE hs.hospital_id = h.hospital_id
+      AND hs.department = $${paramIndex++}
+    )`;
     params.push(department);
   }
   if (nextCursor) {
@@ -132,7 +138,12 @@ export const searchHospitalsRepository = async (
     countParams.push(`%${name}%`);
   }
   if (department) {
-    countQuery += ` AND s.department = $${countParamIndex++}`;
+    countQuery += ` AND EXISTS (
+      SELECT 1
+      FROM hospital_speciality hs
+      WHERE hs.hospital_id = h.hospital_id
+      AND hs.department = $${countParamIndex++}
+    )`;
     countParams.push(department);
   }
 
@@ -171,17 +182,27 @@ export const searchHospitalsByLocationRepository = async (
   let paramIndex = 4;
 
   if (department) {
-    query += ` AND s.department = $${paramIndex++}`;
+    query += ` AND EXISTS (
+      SELECT 1
+      FROM hospital_speciality hs
+      WHERE hs.hospital_id = h.hospital_id
+      AND hs.department = $${paramIndex++}
+    )`;
     params.push(department);
   }
   if (nextCursor) {
     const [nextCursorDistance, nextCursorId] = nextCursor.split('_');
-    query += ` AND (ST_Distance(h.geom::geography, ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography), h.hospital_id) > ($${paramIndex++}, $${paramIndex++})`;
-    params.push(parseFloat(nextCursorDistance), nextCursorId);
+    query += ` AND (
+      ST_Distance(h.geom::geography, ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography),
+      h.hospital_id) > ($${paramIndex}, $${paramIndex + 1}
+    )`;
+    params.push(parseFloat(nextCursorDistance));
+    params.push(nextCursorId);
+    paramIndex += 2;
   }
 
   query += ` GROUP BY h.hospital_id ORDER BY distance, h.hospital_id LIMIT $${paramIndex++}`;
-  params.push(pageSize);
+  params.push(parseInt(pageSize.toString(), 10));
 
   const result = await datasource.query(query, params);
 
@@ -197,7 +218,12 @@ export const searchHospitalsByLocationRepository = async (
   let countParamIndex = 4;
 
   if (department) {
-    countQuery += ` AND s.department = $${countParamIndex++}`;
+    countQuery += ` AND EXISTS (
+      SELECT 1
+      FROM hospital_speciality hs
+      WHERE hs.hospital_id = h.hospital_id
+      AND hs.department = $${countParamIndex++}
+    )`;
     countParams.push(department);
   }
 
@@ -208,7 +234,7 @@ export const searchHospitalsByLocationRepository = async (
 
 /** 특정 병원 데이터 조회 리포지토리 */
 export const getHospitalDetailsRepository = async (
-  searchParams: HospitalDetailDTO
+  searchParams: HospitalIdDTO
 ): Promise<IHospital[]> => {
   const query = `
     SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos, 
@@ -225,5 +251,41 @@ export const getHospitalDetailsRepository = async (
   const params = [searchParams.hospital_id];
 
   const result = await datasource.query(query, params);
+  return result;
+};
+
+/** 병원 기록 저장 리포지토리 */
+export const saveHospitalRecordRepository = async (
+  hospitalRecord: HospitalRecord
+) => {
+  const hospitalRecordRepo = datasource.getRepository(HospitalRecord);
+  return await hospitalRecordRepo.save(hospitalRecord);
+};
+
+/** 병원 기록 삭제 리포지토리 */
+export const deleteHospitalRecordRepository = async (
+  userId: number,
+  hospitalId: string
+) => {
+  const hospitalRecordRepo = datasource.getRepository(HospitalRecord);
+  return await hospitalRecordRepo.delete({
+    user_id: userId,
+    hospital_id: hospitalId
+  });
+};
+
+/** 병원 기록 조회 리포지토리 */
+export const getHospitalRecordsByUserIdRepository = async (
+  userId: number
+): Promise<IHospitalRecord[]> => {
+  const query = `
+    SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos,
+      hr.createdAt
+    FROM hospital h
+    INNER JOIN hospital_record hr ON h.hospital_id = hr.hospital_id
+    WHERE hr.user_id = $1
+    ORDER BY hr.createdAt DESC
+  `;
+  const result = await datasource.query(query, [userId]);
   return result;
 };

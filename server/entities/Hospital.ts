@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { MedicalDevice } from './MedicalDevices';
 import { HospitalSpeciality } from './HospitalSpecialities';
+import { HospitalRecord } from './HospitalRecord';
 
 @Entity()
 export class Hospital {
@@ -66,4 +67,7 @@ export class Hospital {
 
   @OneToMany(() => HospitalSpeciality, (speciality) => speciality.hospital)
   specialities: HospitalSpeciality[];
+
+  @OneToMany(() => HospitalRecord, (record) => record.hospital)
+  hospitalRecords: HospitalRecord[];
 }

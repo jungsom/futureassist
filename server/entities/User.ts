@@ -7,8 +7,8 @@ import {
   DeleteDateColumn,
   OneToMany
 } from 'typeorm';
-import { Hospital } from './Hospital';
 import { HealthRecords } from './HealthRecord';
+import { HospitalRecord } from './HospitalRecord';
 
 @Entity()
 export class User {
@@ -38,4 +38,7 @@ export class User {
 
   @OneToMany(() => HealthRecords, (health) => health.user)
   health: HealthRecords[];
+
+  @OneToMany(() => HospitalRecord, (record) => record.user)
+  hospitalRecords: HospitalRecord[];
 }
