@@ -22,6 +22,9 @@ export class HealthRecords {
   weight: number;
 
   @Column({ nullable: true })
+  height: number;
+
+  @Column({ nullable: true })
   bloodsugar: number;
 
   @Column({ nullable: true })
