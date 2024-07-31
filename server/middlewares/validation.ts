@@ -8,10 +8,11 @@ export const validationMiddleware = (type: any) => {
     const errors = await validate(output);
 
     if (errors.length > 0) {
-      const errorMessages = errors
-        .map((error: ValidationError) => Object.values(error.constraints || {}))
-        .flat();
+      const errorMessages: Record<string, string[]> = {};
 
+      errors.forEach((error: ValidationError) => {
+        errorMessages[error.property] = Object.values(error.constraints || {});
+      });
       return res.status(400).json({ errors: errorMessages });
     }
 
