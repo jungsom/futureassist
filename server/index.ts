@@ -6,6 +6,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import userRouter from './routes/user';
 import hospitalRouter from './routes/hospital';
+import chatRouter from './routes/chat'
 import { errorMiddleware } from './middlewares/error';
 import { verifyAccessToken } from './middlewares/jwt';
 dotenv.config();
@@ -30,6 +31,7 @@ app.use('/auth', verifyAccessToken, (req, res, next) => {
 });
 app.use('/api/user', userRouter);
 app.use('/api/hospital', hospitalRouter);
+app.use('/api/chat', chatRouter);
 
 // 에러 처리 미들웨어
 app.use(errorMiddleware);
