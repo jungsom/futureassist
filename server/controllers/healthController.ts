@@ -1,4 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { CustomRequest } from '../models/jwtModel';
+import { generateHealthRecord } from '../services/healthService';
+import { createdHealthRecord } from '../repositories/healthRepo';
 
 /** 회원 건강정보 등록 */
 export const PostHealthRecord = async (
@@ -6,8 +9,9 @@ export const PostHealthRecord = async (
   res: Response,
   next: NextFunction
 ) => {
-  // const healthRecord = generateHealthRecord();
-  // await createdHealthRecord();
+  const userId = (req as CustomRequest).user_id;
+  const healthRecord = await generateHealthRecord(userId, req.body);
+  await createdHealthRecord(healthRecord);
 };
 
 /** 회원 건강정보 수정 */

@@ -103,25 +103,27 @@ export const checkEmailwithPw = async (data: Iuser) => {
 };
 
 /** 기존 회원 정보 생성 */
-export const changeUserInfo = async (userId: number, data: Iuser) => {
+export const changeUserInfo = async (userId: User, data: Iuser) => {
   try {
     const hashedPassword = await generatePassword(data.password);
+    const beforeUserInfo = await selectedById(userId);
 
-    const user = new User();
-    user.user_id = userId;
-    user.email = data.email;
-    user.name = data.name;
-    user.password = hashedPassword;
-    user.birth_year = data.birth_year;
+    const afterUserInfo = {
+      user_id: beforeUserInfo.user_id,
+      name: data.name,
+      password: hashedPassword,
+      email: data.email,
+      birth_year: data.birth_year
+    };
 
-    return user;
+    return afterUserInfo;
   } catch (err) {
     throw err;
   }
 };
 
 /** 탈퇴 회원 체크 */
-export const checkWithDrawed = async (data: Iuser) => {
+export const checkWithDrawed = async (data: User) => {
   try {
     const user = await selectedByDeletedAt(data.email);
 

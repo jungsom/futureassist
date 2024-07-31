@@ -16,7 +16,7 @@ export class HealthRecords {
   health_id: number;
 
   @ManyToOne(() => User, (user) => user.health)
-  user: User;
+  user_id: User;
 
   @Column({ nullable: true })
   weight: number;
@@ -28,16 +28,16 @@ export class HealthRecords {
   bloodsugar: number;
 
   @Column({ nullable: true })
-  bloodPressure: number;
+  bloodpressure: number;
 
   @Column({ nullable: true })
   cholesterol: number;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;

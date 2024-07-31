@@ -28,14 +28,14 @@ export class User {
   birth_year: number;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
 
-  @OneToMany(() => HealthRecords, (health) => health.user)
-  health: HealthRecords[];
+  @OneToMany(() => HealthRecords, (health) => health.user_id)
+  health?: HealthRecords[];
 }

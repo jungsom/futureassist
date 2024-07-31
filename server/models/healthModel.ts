@@ -1,5 +1,4 @@
 export interface Ihealth {
-  user_id: number;
   height: number; //cm
   weight: number; //kg
   bloodsugar: number; //mg/dL
