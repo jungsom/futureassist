@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { HealthRecords } from './HealthRecord';
 import { HospitalRecord } from './HospitalRecord';
+import { Board } from './Board';
 
 @Entity()
 export class User {
@@ -41,4 +42,7 @@ export class User {
 
   @OneToMany(() => HospitalRecord, (record) => record.user)
   hospitalRecords: HospitalRecord[];
+
+  @OneToMany(() => Board, (board) => board.user)
+  boards: Board[];
 }

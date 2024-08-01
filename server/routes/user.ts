@@ -1,4 +1,4 @@
-import express from 'express';
+import { Router } from 'express';
 import {
   register,
   login,
@@ -11,7 +11,7 @@ import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
 import { registerDTO, loginDTO, userDto } from '../dtos/userDto';
 
-const userRouter = express.Router();
+const userRouter = Router();
 
 userRouter.post('/register', validationMiddleware(registerDTO), register);
 userRouter.post('/login', validationMiddleware(loginDTO), login);
