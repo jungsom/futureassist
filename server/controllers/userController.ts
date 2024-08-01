@@ -44,10 +44,9 @@ export async function register(
 /** 로그인 컨트롤러 */
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
-    await checkEmailwithPw(req.body);
     await checkWithDrawed(req.body);
-
-    const accessToken = await generateAccessToken(req.body);
+    const user = await checkEmailwithPw(req.body);
+    const accessToken = await generateAccessToken(user);
     setCookie(res, 'token', accessToken);
 
     return res.status(200).json({ message: '로그인이 완료되었습니다.' });

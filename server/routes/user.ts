@@ -15,7 +15,7 @@ const userRouter = express.Router();
 
 userRouter.post('/register', validationMiddleware(registerDTO), register);
 userRouter.post('/login', validationMiddleware(loginDTO), login);
-userRouter.post('/kakao', kakaoLogin);
+userRouter.get('/kakao', kakaoLogin);
 userRouter.get('/logout', verifyAccessToken, logout);
 userRouter.put(
   '/info',
