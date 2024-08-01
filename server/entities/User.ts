@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Hospital } from './Hospital';
 import { HealthRecords } from './HealthRecord';
+import { Chat } from './Chat'; // Chat 엔티티가 정의된 파일을 임포트
 
 @Entity()
 export class User {
@@ -37,5 +38,8 @@ export class User {
   deletedAt?: Date;
 
   @OneToMany(() => HealthRecords, (health) => health.user)
-  health?: HealthRecords[];
+  health: HealthRecords[];
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat[];
 }
