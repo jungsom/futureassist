@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from app.controllers.chatController import chatAnswer
 from app.utils.csv2df import csv2df
 from app.utils.loadModel import loadModel
@@ -26,4 +26,10 @@ model, tokenizer, device = loadModel(modelpath)
 async def answer(request: Request):
     input_data = await request.json()
     input = input_data.get('input')
-    return chatAnswer(input, a2d, daily_noun, medi_noun, okt, model, tokenizer, device)
+    try:
+        result = chatAnswer(input, a2d, daily_noun, medi_noun, okt, model, tokenizer, device)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")

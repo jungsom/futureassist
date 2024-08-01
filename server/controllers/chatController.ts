@@ -5,7 +5,7 @@ export async function getChat(req: Request, res: Response, next: NextFunction) {
     const { input } = req.body;
     try {
         const response = await axios.post('http://localhost:8000/api/chat', { input });
-        res.status(400).json(response.data);
+        res.status(200).json(response.data);
     } catch (err) {
         next(err);
     }
