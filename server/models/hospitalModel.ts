@@ -26,3 +26,18 @@ export interface IHospitalSpeciality {
   department: string;
   specialist_cnt: number;
 }
+
+export interface IHospitalRecord {
+  hospital_id: string;
+  name: string;
+  type: string;
+  telno?: string;
+  url?: string;
+  addr: string;
+  sido_addr: string;
+  sigu_addr: string;
+  dong_addr?: string;
+  x_pos?: number;
+  y_pos?: number;
+  createdAt: string;
+}

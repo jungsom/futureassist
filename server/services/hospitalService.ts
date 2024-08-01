@@ -5,19 +5,46 @@ import {
   getSpecialityRepository,
   searchHospitalsRepository,
   searchHospitalsByLocationRepository,
-  getHospitalDetailsRepository
+  getHospitalDetailsRepository,
+  saveHospitalRecordRepository,
+  deleteHospitalRecordRepository,
+  getHospitalRecordsByUserIdRepository,
+  getHospitalRecordCountByUserId,
+  getHospitalRecordByUserIdAndHospitalId
 } from '../repositories/hospitalRepository';
 import {
   SearchHospitalDTO,
   LocationDTO,
-  HospitalDetailDTO
+  HospitalIdDTO
 } from '../dtos/hospitalDto';
+import { HospitalRecord } from '../entities/HospitalRecord';
 import { IHospital } from '../models/hospitalModel';
+import { BadRequest } from '../middlewares/error';
 
 /** 시도 데이터 조회 서비스 */
+const sidoOrder = [
+  '서울',
+  '부산',
+  '인천',
+  '대구',
+  '광주',
+  '대전',
+  '울산',
+  '경기',
+  '강원',
+  '충북',
+  '충남',
+  '전북',
+  '전남',
+  '경북',
+  '경남',
+  '제주',
+  '세종시'
+];
+
 export async function getSidoAddr(): Promise<string[]> {
   const result = await getSidoAddrRepository();
-  return result.sort((a, b) => a.localeCompare(b));
+  return result.sort((a, b) => sidoOrder.indexOf(a) - sidoOrder.indexOf(b));
 }
 
 /** 시구 데이터 조회 서비스 */
@@ -81,7 +108,7 @@ export async function searchHospitalsByLocation(
 
 /** 특정 병원 데이터 조회 서비스 */
 export async function getHospitalDetails(
-  searchParams: HospitalDetailDTO
+  searchParams: HospitalIdDTO
 ): Promise<IHospital> {
   const result = await getHospitalDetailsRepository(searchParams);
 
@@ -91,3 +118,65 @@ export async function getHospitalDetails(
 
   return result[0];
 }
+
+/** 병원 정보 저장 서비스 */
+export const saveHospital = async (userId: number, dto: HospitalIdDTO) => {
+  const existingRecordCount = await getHospitalRecordCountByUserId(userId);
+  if (existingRecordCount >= 5) {
+    throw new BadRequest('최대 5개의 병원만 저장할 수 있습니다.');
+  }
+
+  const existingRecord = await getHospitalRecordByUserIdAndHospitalId(
+    userId,
+    dto.hospital_id
+  );
+  if (existingRecord) {
+    throw new BadRequest('이미 저장된 병원입니다.');
+  }
+
+  const hospital = await getHospitalDetailsRepository(dto);
+
+  if (!hospital) {
+    throw new BadRequest('해당 병원을 찾을 수 없습니다.');
+  }
+
+  const hospitalRecord = new HospitalRecord();
+  hospitalRecord.user_id = userId;
+  hospitalRecord.hospital_id = dto.hospital_id;
+
+  try {
+    await saveHospitalRecordRepository(hospitalRecord);
+    return { message: '병원 정보가 저장되었습니다.' };
+  } catch (err) {
+    throw new Error(`병원 저장 중 오류가 발생했습니다.`);
+  }
+};
+
+/** 병원 정보 삭제 서비스 */
+export const deleteHospital = async (userId: number, dto: HospitalIdDTO) => {
+  const hospital = await getHospitalDetailsRepository(dto);
+
+  if (!hospital) {
+    throw new BadRequest('해당 병원을 찾을 수 없습니다.');
+  }
+
+  try {
+    await deleteHospitalRecordRepository(userId, dto.hospital_id);
+    return { message: '병원 정보가 삭제되었습니다.' };
+  } catch (err) {
+    throw new Error(`병원 삭제 중 오류가 발생했습니다.`);
+  }
+};
+
+/** 병원 기록 조회 서비스 */
+export const getHospitalRecordsByUserId = async (userId: number) => {
+  const records = await getHospitalRecordsByUserIdRepository(userId);
+
+  return records.map((record) => ({
+    ...record,
+    createdAt: new Date(record.createdAt)
+      .toISOString()
+      .slice(0, 16)
+      .replace('T', ' ')
+  }));
+};

@@ -88,8 +88,8 @@ export class LocationDTO {
   nextCursor?: string;
 }
 
-export class HospitalDetailDTO {
-  @IsString()
+export class HospitalIdDTO {
   @IsNotEmpty()
+  @IsString()
   hospital_id: string;
 }
