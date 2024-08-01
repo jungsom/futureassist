@@ -6,7 +6,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  ManyToOne
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
 import { User } from './User';
 
@@ -15,8 +16,11 @@ export class HealthRecords {
   @PrimaryGeneratedColumn()
   health_id: number;
 
-  @ManyToOne(() => User, (user) => user.health)
-  user_id: User;
+  @ManyToOne(() => User, (user) => user.health, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
+  user: User;
 
   @Column({ nullable: true })
   weight: number;

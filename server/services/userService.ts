@@ -59,7 +59,7 @@ export const generateAccessToken = async (data: Iuser) => {
 
     return accessToken;
   } catch (err) {
-    throw new Unauthorized('토큰 생성에 실패하였습니다.');
+    throw err;
   }
 };
 
@@ -80,7 +80,6 @@ export const setCookie = (
 export const checkEmail = async (data: Iuser) => {
   try {
     const user = await selectedByEmail(data.email);
-    console.log(user);
     if (user) {
       throw new BadRequest('이미 가입되어 있는 회원입니다.');
     }
@@ -93,8 +92,8 @@ export const checkEmail = async (data: Iuser) => {
 export const checkEmailwithPw = async (data: Iuser) => {
   try {
     const user = await selectedByEmail(data.email);
-    const correctPassword = await bcrypt.compare(data.email, user.password);
-    if (correctPassword || user) {
+    const correctPassword = await bcrypt.compare(data.password, user.password);
+    if (correctPassword && user) {
       return user;
     }
   } catch (err) {
@@ -103,27 +102,25 @@ export const checkEmailwithPw = async (data: Iuser) => {
 };
 
 /** 기존 회원 정보 생성 */
-export const changeUserInfo = async (userId: User, data: Iuser) => {
+export const changeUserInfo = async (userId: number, data: Iuser) => {
   try {
     const hashedPassword = await generatePassword(data.password);
-    const beforeUserInfo = await selectedById(userId);
 
-    const afterUserInfo = {
-      user_id: beforeUserInfo.user_id,
-      name: data.name,
-      password: hashedPassword,
-      email: data.email,
-      birth_year: data.birth_year
-    };
+    const user = new User();
+    user.user_id = userId;
+    user.email = data.email;
+    user.name = data.name;
+    user.password = hashedPassword;
+    user.birth_year = data.birth_year;
 
-    return afterUserInfo;
+    return user;
   } catch (err) {
     throw err;
   }
 };
 
 /** 탈퇴 회원 체크 */
-export const checkWithDrawed = async (data: User) => {
+export const checkWithDrawed = async (data: Iuser) => {
   try {
     const user = await selectedByDeletedAt(data.email);
 
@@ -141,9 +138,6 @@ export const generateKakao = async (kakaoData: any) => {
     const user = new User();
     user.email = kakaoData.data.kakao_account.email;
     user.name = kakaoData.data.properties.nickname;
-
-    console.log(user.email);
-    console.log(user.name);
 
     const result = await createdUser(user);
     return result;
@@ -184,7 +178,6 @@ export const kakaoToJwt = async (data: any) => {
 
     await checkEmail(kakao.data.kakao_account.email);
     const kakaoUser = await generateKakao(kakao);
-    console.log(kakaoUser);
 
     return await generateAccessToken(kakaoUser);
   } catch (err) {

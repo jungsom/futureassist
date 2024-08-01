@@ -36,6 +36,6 @@ export class User {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
 
-  @OneToMany(() => HealthRecords, (health) => health.user_id)
+  @OneToMany(() => HealthRecords, (health) => health.user)
   health?: HealthRecords[];
 }

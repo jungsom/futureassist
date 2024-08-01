@@ -22,7 +22,7 @@ export const selectedByEmail = async (email: string) => {
   }
 };
 
-export const selectedById = async (id: User) => {
+export const selectedById = async (id: number) => {
   try {
     const result = await datasource.query(
       'SELECT user_id, email, password, birth_year, name FROM "user" WHERE user_id = $1',
