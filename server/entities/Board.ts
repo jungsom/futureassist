@@ -6,14 +6,19 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
+  OneToMany
 } from 'typeorm';
 import { User } from './User';
+import { Comment } from './comment';
 
 @Entity()
 export class Board {
   @PrimaryGeneratedColumn()
   board_id: number;
+
+  @OneToMany(() => Comment, (comment) => comment.board_id)
+  comment_id: Comment[];
 
   @Column()
   user_id: number;

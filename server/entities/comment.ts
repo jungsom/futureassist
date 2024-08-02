@@ -12,17 +12,21 @@ import {
 } from 'typeorm';
 import { User } from './User';
 import { Comment_like } from './comment_like';
+import { Board } from './Board';
 
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
   comment_id: number;
 
-  // @ManyToOne(() => Board, (board) => board.comment, {
-  //   onDelete: 'CASCADE'
-  // })
-  // @JoinColumn({ name: 'board_id', referencedColumnName: 'board_id' })
-  // board: Board;
+  @Column()
+  board_id: number;
+
+  @ManyToOne(() => Board, (board) => board.comment_id, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'board_id', referencedColumnName: 'board_id' })
+  board: Board;
 
   @Column()
   user_id: number;
@@ -32,12 +36,6 @@ export class Comment {
   })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   user: User;
-
-  @ManyToMany(() => Comment_like, (comment_like) => comment_like.comment, {
-    onDelete: 'CASCADE'
-  })
-  @JoinColumn({ name: 'commentLike', referencedColumnName: 'commentLike' })
-  commentLike: Comment_like;
 
   @Column()
   content: string;
@@ -50,4 +48,10 @@ export class Comment {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
+
+  @ManyToMany(() => Comment_like, (comment_like) => comment_like.comment_id, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'commentLike', referencedColumnName: 'commentLike' })
+  commentLike: Comment_like;
 }
