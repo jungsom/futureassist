@@ -20,6 +20,7 @@ import {
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { IHospital } from '../models/hospitalModel';
 import { BadRequest } from '../middlewares/error';
+import { formatDateToMinute } from './utils';
 
 /** 시도 데이터 조회 서비스 */
 const sidoOrder = [
@@ -160,6 +161,14 @@ export const deleteHospital = async (userId: number, dto: HospitalIdDTO) => {
     throw new BadRequest('해당 병원을 찾을 수 없습니다.');
   }
 
+  const existingRecord = await getHospitalRecordByUserIdAndHospitalId(
+    userId,
+    dto.hospital_id
+  );
+  if (!existingRecord) {
+    throw new BadRequest('삭제할 해당 병원 기록이 없습니다.');
+  }
+
   try {
     await deleteHospitalRecordRepository(userId, dto.hospital_id);
     return { message: '병원 정보가 삭제되었습니다.' };
@@ -172,11 +181,12 @@ export const deleteHospital = async (userId: number, dto: HospitalIdDTO) => {
 export const getHospitalRecordsByUserId = async (userId: number) => {
   const records = await getHospitalRecordsByUserIdRepository(userId);
 
+  if (records.length === 0) {
+    throw new BadRequest('저장된 병원 기록이 없습니다.');
+  }
+
   return records.map((record) => ({
     ...record,
-    createdAt: new Date(record.createdAt)
-      .toISOString()
-      .slice(0, 16)
-      .replace('T', ' ')
+    createdAt: formatDateToMinute(new Date(record.createdAt))
   }));
 };

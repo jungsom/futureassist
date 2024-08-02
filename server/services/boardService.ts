@@ -2,11 +2,14 @@ import {
   saveBoardRepository,
   getBoardByIdRepository,
   updateBoardRepository,
-  deleteBoardRepository
+  deleteBoardRepository,
+  getAndIncrementViewsRepository
 } from '../repositories/boardRepository';
 import { BoardDTO, BoardIdDTO } from '../dtos/boardDto';
 import { Board } from '../entities/Board';
 import { BadRequest } from '../middlewares/error';
+import { formatDateToMinute } from './utils';
+import { IBoard } from '../models/boardModel';
 
 /** 게시글 생성 서비스 */
 export const createBoard = async (userId: number, dto: BoardDTO) => {
@@ -53,21 +56,37 @@ export const updateBoard = async (
 };
 
 /** 게시글 삭제 서비스 */
-export const deleteBoard = async (userId: number, boardId: number) => {
-  const existingBoard = await getBoardByIdRepository(boardId);
+export const deleteBoard = async (userId: number, dto: BoardIdDTO) => {
+  const board = await getBoardByIdRepository(dto.board_id);
 
-  if (!existingBoard) {
+  if (!board) {
     throw new BadRequest('삭제할 게시글을 찾을 수 없습니다.');
   }
 
-  if (existingBoard.user_id !== userId) {
+  if (board.user_id !== userId) {
     throw new BadRequest('삭제할 권한이 없습니다.');
   }
 
   try {
-    await deleteBoardRepository(boardId);
+    await deleteBoardRepository(userId, dto.board_id);
     return { message: '게시글이 삭제되었습니다.' };
   } catch (err) {
-    throw new Error('게시글 삭제 중 오류가 발생했습니다.');
+    throw new Error(`게시글 삭제 중 오류가 발생했습니다.`);
   }
+};
+
+/** 게시글 조회 및 조회수 증가 서비스 */
+export const getBoardAndIncrementViews = async (
+  param: BoardIdDTO
+): Promise<IBoard> => {
+  const board = await getAndIncrementViewsRepository(param.board_id);
+
+  if (!board) {
+    throw new BadRequest('해당 게시글을 찾을 수 없습니다.');
+  }
+
+  return {
+    ...board,
+    updatedAt: formatDateToMinute(new Date(board.updatedAt))
+  };
 };

@@ -2,7 +2,8 @@ import { Router } from 'express';
 import {
   createBoardRecord,
   updateBoardRecord,
-  deleteBoardRecord
+  deleteBoardRecord,
+  getBoardRecord
 } from '../controllers/boardController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
@@ -28,6 +29,12 @@ boardRouter.delete(
   verifyAccessToken,
   validationMiddleware(BoardIdDTO, 'query'),
   deleteBoardRecord
+);
+boardRouter.get(
+  '/',
+  verifyAccessToken,
+  validationMiddleware(BoardIdDTO, 'query'),
+  getBoardRecord
 );
 
 export default boardRouter;
