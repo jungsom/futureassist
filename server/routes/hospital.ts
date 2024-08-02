@@ -21,39 +21,39 @@ import {
   HospitalIdDTO
 } from '../dtos/hospitalDto';
 
-const router = Router();
+const hospitalRouter = Router();
 
-router.get('/sido', getSido);
-router.get('/sigu', validationMiddleware(SidoDTO, 'query'), getSigu);
-router.get('/dong', validationMiddleware(SiguDTO, 'query'), getDong);
-router.get('/specialities', getSpeciality);
-router.get(
+hospitalRouter.get('/sido', getSido);
+hospitalRouter.get('/sigu', validationMiddleware(SidoDTO, 'query'), getSigu);
+hospitalRouter.get('/dong', validationMiddleware(SiguDTO, 'query'), getDong);
+hospitalRouter.get('/specialities', getSpeciality);
+hospitalRouter.get(
   '/search',
   validationMiddleware(SearchHospitalDTO, 'query'),
   searchHospital
 );
-router.get(
+hospitalRouter.get(
   '/location',
   validationMiddleware(LocationDTO, 'query'),
   getHospitalsByLocation
 );
-router.get(
+hospitalRouter.get(
   '/detaileddata',
   validationMiddleware(HospitalIdDTO, 'query'),
   getHospitalDetail
 );
-router.post(
+hospitalRouter.post(
   '/record',
   verifyAccessToken,
   validationMiddleware(HospitalIdDTO),
   saveHospitalRecord
 );
-router.delete(
+hospitalRouter.delete(
   '/record',
   verifyAccessToken,
   validationMiddleware(HospitalIdDTO),
   deleteHospitalRecord
 );
-router.get('/record', verifyAccessToken, getHospitalRecordsByUser);
+hospitalRouter.get('/record', verifyAccessToken, getHospitalRecordsByUser);
 
-export default router;
+export default hospitalRouter;

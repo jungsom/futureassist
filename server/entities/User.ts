@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { HealthRecords } from './HealthRecord';
 import { HospitalRecord } from './HospitalRecord';
+import { Board } from './Board';
 import { Comment } from './comment';
 
 @Entity()
@@ -46,6 +47,13 @@ export class User {
   @OneToMany(() => HospitalRecord, (record) => record.user)
   hospitalRecords: HospitalRecord[];
 
+<<<<<<< HEAD
   @OneToMany(() => Comment, (comment) => comment.user_id)
+=======
+  @OneToMany(() => Board, (board) => board.user)
+  boards: Board[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+>>>>>>> 7fec8a036dae9a2ec5e818c6ea88c648e47d525c
   comment: Comment[];
 }

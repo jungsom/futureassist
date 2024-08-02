@@ -6,6 +6,7 @@ import {
 } from '../dtos/hospitalDto';
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { IHospital, IHospitalRecord } from '../models/hospitalModel';
+import { BadRequest } from '../middlewares/error';
 
 /** 시도 데이터 조회 리포지토리 */
 export const getSidoAddrRepository = async (): Promise<string[]> => {
@@ -268,7 +269,7 @@ export const deleteHospitalRecordRepository = async (
   hospitalId: string
 ) => {
   const hospitalRecordRepo = datasource.getRepository(HospitalRecord);
-  return await hospitalRecordRepo.delete({
+  return await hospitalRecordRepo.softDelete({
     user_id: userId,
     hospital_id: hospitalId
   });
@@ -283,7 +284,7 @@ export const getHospitalRecordsByUserIdRepository = async (
       hr."createdAt"
     FROM hospital h
     INNER JOIN hospital_record hr ON h.hospital_id = hr.hospital_id
-    WHERE hr.user_id = $1
+    WHERE hr.user_id = $1 AND hr."deletedAt" IS NULL
     ORDER BY hr."createdAt" DESC
   `;
   const result = await datasource.query(query, [userId]);
@@ -297,7 +298,7 @@ export const getHospitalRecordCountByUserId = async (
   const query = `
     SELECT COUNT(*) as count
     FROM hospital_record
-    WHERE user_id = $1
+    WHERE user_id = $1 AND "deletedAt" IS NULL
   `;
   const result = await datasource.query(query, [userId]);
   return parseInt(result[0].count, 10);
@@ -310,7 +311,7 @@ export const getHospitalRecordByUserIdAndHospitalId = async (
 ) => {
   const query = `
     SELECT * FROM hospital_record
-    WHERE user_id = $1 AND hospital_id = $2
+    WHERE user_id = $1 AND hospital_id = $2 AND "deletedAt" IS NULL
   `;
   const result = await datasource.query(query, [userId, hospitalId]);
   return result[0];

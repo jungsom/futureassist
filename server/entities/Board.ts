@@ -9,28 +9,33 @@ import {
   DeleteDateColumn
 } from 'typeorm';
 import { User } from './User';
-import { Hospital } from './Hospital';
 
 @Entity()
-export class HospitalRecord {
+export class Board {
   @PrimaryGeneratedColumn()
-  id: number;
+  board_id: number;
 
   @Column()
   user_id: number;
 
-  @ManyToOne(() => User, (user) => user.hospitalRecords, {
-    onDelete: 'CASCADE'
-  })
+  @ManyToOne(() => User, (user) => user.boards)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   user: User;
 
   @Column()
-  hospital_id: string;
+  title: string;
 
-  @ManyToOne(() => Hospital, (hospital) => hospital.hospitalRecords)
-  @JoinColumn({ name: 'hospital_id', referencedColumnName: 'hospital_id' })
-  hospital: Hospital;
+  @Column()
+  content: string;
+
+  @Column('simple-array')
+  hashtag: string[];
+
+  @Column({ default: 0 })
+  views: number;
+
+  @Column({ default: 0 })
+  likes: number;
 
   @CreateDateColumn()
   createdAt: Date;

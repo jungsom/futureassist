@@ -16,11 +16,14 @@ export class HealthRecords {
   @PrimaryGeneratedColumn()
   health_id: number;
 
+  @Column()
+  user_id: number;
+
   @ManyToOne(() => User, (user) => user.health, {
     onDelete: 'CASCADE'
   })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
-  user_id: number;
+  user: User;
 
   @Column({ nullable: true })
   weight: number;
