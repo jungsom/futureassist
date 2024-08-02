@@ -10,32 +10,24 @@ import {
   JoinColumn
 } from 'typeorm';
 import { User } from './User';
+import { Comment } from './comment';
 
 @Entity()
-export class HealthRecords {
+export class Comment_like {
   @PrimaryGeneratedColumn()
-  health_id: number;
+  like_id: number;
 
-  @ManyToOne(() => User, (user) => user.health, {
+  @ManyToOne(() => Comment, (comment) => comment.commentLike, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'comment_id', referencedColumnName: 'comment_id' })
+  comment: Comment;
+
+  @ManyToOne(() => User, (user) => user.comment, {
     onDelete: 'CASCADE'
   })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
-  user_id: number;
-
-  @Column({ nullable: true })
-  weight: number;
-
-  @Column({ nullable: true })
-  height: number;
-
-  @Column({ nullable: true })
-  bloodsugar: number;
-
-  @Column({ nullable: true })
-  bloodpressure: number;
-
-  @Column({ nullable: true })
-  cholesterol: number;
+  user: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;

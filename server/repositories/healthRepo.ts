@@ -13,7 +13,7 @@ export const createdHealthRecord = async (record: HealthRecords) => {
 };
 
 /** 건강정보 조회 */
-export const selectedHealthRecord = async (userId: User) => {
+export const selectedHealthRecord = async (userId: number) => {
   try {
     const result = await datasource.query(
       'SELECT health_id, height, weight, bloodsugar, cholesterol, bloodpressure, created_at, updated_at FROM "health_records" WHERE user_id = $1',
