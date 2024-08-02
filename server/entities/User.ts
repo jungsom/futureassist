@@ -27,6 +27,9 @@ export class User {
   @Column({ nullable: true })
   birth_year: number;
 
+  @Column({ nullable: true })
+  profile_image?: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 

@@ -184,3 +184,15 @@ export const kakaoToJwt = async (data: any) => {
     throw err;
   }
 };
+
+export const generateProfileImage = async (userId: number, data?: string) => {
+  try {
+    const user = new User();
+    user.user_id = userId;
+    user.profile_image = data;
+
+    return user;
+  } catch (err) {
+    throw err;
+  }
+};
