@@ -5,7 +5,9 @@ import {
   Length,
   IsEmail,
   Min,
-  Max
+  Max,
+  IsOptional,
+  IsDate
 } from 'class-validator';
 
 export class registerDTO {
@@ -15,8 +17,7 @@ export class registerDTO {
 
   @IsNotEmpty()
   @Matches(/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,12}$/, {
-    message:
-      "비밀번호는 최소 8자 이상, 문자, 숫자, 특수문자를 포함해야 합니다.'"
+    message: "비밀번호는 최소 8~12자, 문자, 숫자, 특수문자를 포함해야 합니다.'"
   })
   public password: string;
 
@@ -29,6 +30,8 @@ export class registerDTO {
   @Min(1900)
   @Max(2010)
   public birth_year: number;
+
+  public deletedAt?: Date;
 }
 
 export class loginDTO {
@@ -39,4 +42,14 @@ export class loginDTO {
   @IsNotEmpty()
   @Length(8)
   public password: string;
+  public deletedAt?: Date;
+}
+
+export class userDto {
+  public user_id: number;
+  public email: string;
+  public name: string;
+  public password: string;
+  public birth_year: number;
+  public deletedAt?: Date;
 }

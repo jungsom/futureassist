@@ -5,10 +5,11 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
+  DeleteDateColumn
 } from 'typeorm';
 import { MedicalDevice } from './MedicalDevices';
 import { HospitalSpeciality } from './HospitalSpecialities';
+import { HospitalRecord } from './HospitalRecord';
 
 @Entity()
 export class Hospital {
@@ -45,6 +46,13 @@ export class Hospital {
   @Column('float', { nullable: true })
   y_pos: number;
 
+  @Column('geography', {
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true
+  })
+  geom: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -59,4 +67,7 @@ export class Hospital {
 
   @OneToMany(() => HospitalSpeciality, (speciality) => speciality.hospital)
   specialities: HospitalSpeciality[];
+
+  @OneToMany(() => HospitalRecord, (record) => record.hospital)
+  hospitalRecords: HospitalRecord[];
 }
