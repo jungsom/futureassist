@@ -3,12 +3,14 @@ import 'reflect-metadata';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import userRouter from './routes/user';
 import hospitalRouter from './routes/hospital';
+import boardRouter from './routes/board';
 import { errorMiddleware } from './middlewares/error';
 import { verifyAccessToken } from './middlewares/jwt';
+
 dotenv.config();
 
 const app = express();
@@ -33,6 +35,7 @@ app.use('/auth', verifyAccessToken, (req, res, next) => {
 });
 app.use('/api/user', userRouter);
 app.use('/api/hospital', hospitalRouter);
+app.use('/api/board', boardRouter);
 
 // 에러 처리 미들웨어
 app.use(errorMiddleware);

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { HealthRecords } from './HealthRecord';
 import { HospitalRecord } from './HospitalRecord';
+import { Board } from './Board';
 import { Comment } from './comment';
 
 @Entity()

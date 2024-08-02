@@ -24,11 +24,14 @@ export class Comment {
   // @JoinColumn({ name: 'board_id', referencedColumnName: 'board_id' })
   // board: Board;
 
+  @Column()
+  user_id: number;
+
   @ManyToOne(() => User, (user) => user.comment, {
     onDelete: 'CASCADE'
   })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
-  user_id: number;
+  user: User;
 
   @ManyToMany(() => Comment_like, (comment_like) => comment_like.comment, {
     onDelete: 'CASCADE'
