@@ -14,6 +14,7 @@ import axios from 'axios';
 
 import { Response } from 'express';
 import { Unauthorized, BadRequest } from '../middlewares/error';
+import { error } from 'console';
 
 dotenv.config();
 
@@ -81,7 +82,7 @@ export const checkEmail = async (data: Iuser) => {
   try {
     const user = await selectedByEmail(data.email);
     if (user) {
-      throw new BadRequest('이미 가입되어 있는 회원입니다.');
+      throw error;
     }
   } catch (err) {
     throw new BadRequest('이미 가입되어 있는 회원입니다.');
@@ -95,6 +96,8 @@ export const checkEmailwithPw = async (data: Iuser) => {
     const correctPassword = await bcrypt.compare(data.password, user.password);
     if (correctPassword && user) {
       return user;
+    } else {
+      throw error;
     }
   } catch (err) {
     throw new BadRequest('이메일 혹은 비밀번호를 다시 확인해주세요.');
@@ -125,10 +128,10 @@ export const checkWithDrawed = async (data: Iuser) => {
     const user = await selectedByDeletedAt(data.email);
 
     if (user) {
-      throw new Error('이미 탈퇴한 회원입니다.');
+      throw error;
     }
   } catch (err) {
-    throw err;
+    throw new BadRequest('이미 탈퇴한 회원입니다.');
   }
 };
 
@@ -179,14 +182,15 @@ export const kakaoToJwt = async (res: Response, data: any) => {
     const kakaoUser = await selectedByEmail(kakao.data.kakao_account.email);
 
     if (kakaoUser) {
-      return true;
+      const jwtToken = await generateAccessToken(kakaoUser);
+      return jwtToken;
     } else {
       const newUser = await generateKakao(kakao);
       const jwtToken = await generateAccessToken(newUser);
-      setCookie(res, 'token', jwtToken);
+      return jwtToken;
     }
   } catch (err) {
-    throw err;
+    throw new BadRequest('카카오 로그인에 실패하였습니다.');
   }
 };
 
@@ -198,6 +202,6 @@ export const generateProfileImage = async (userId: number, data?: string) => {
 
     return user;
   } catch (err) {
-    throw err;
+    throw new BadRequest('이미지 업로드에 실패하였습니다.');
   }
 };

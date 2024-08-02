@@ -116,7 +116,8 @@ export async function kakaoLogin(
   try {
     const code = req.query.code;
     const kakaoToken = await CodeToKakao(code);
-    await kakaoToJwt(res, kakaoToken);
+    const jwtToken = await kakaoToJwt(res, kakaoToken);
+    setCookie(res, 'token', jwtToken);
 
     res.status(200).json('카카오 로그인이 완료되었습니다.');
   } catch (err) {
