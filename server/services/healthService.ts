@@ -6,7 +6,7 @@ import { Ihealth } from '../models/healthModel';
 export const generateHealthRecord = async (userId: User, data: Ihealth) => {
   try {
     const health = new HealthRecords();
-    //health.user_id = userId;
+    health.user = userId;
     health.height = data.height;
     health.weight = data.weight;
     health.bloodsugar = data.bloodsugar;

@@ -5,16 +5,19 @@ import {
   logout,
   updateUser,
   withDraw,
-  kakaoLogin
+  kakaoLogin,
+  profileImage
 } from '../controllers/userController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
 import { registerDTO, loginDTO, userDto } from '../dtos/userDto';
+import { upload } from '../config/multer';
 
 const userRouter = express.Router();
 
 userRouter.post('/register', validationMiddleware(registerDTO), register);
 userRouter.post('/login', validationMiddleware(loginDTO), login);
+userRouter.post('/upload', upload.single('image'), profileImage);
 userRouter.get('/kakao', kakaoLogin);
 userRouter.get('/logout', verifyAccessToken, logout);
 userRouter.put(

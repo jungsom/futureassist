@@ -120,3 +120,18 @@ export async function kakaoLogin(
     throw err;
   }
 }
+
+export async function profileImage(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const image = (req as CustomRequest).file?.path;
+
+  // const user = new User();
+  // user.user_id = userId;
+  // user.profileImage = image;
+
+  // createdUser(user);
+  res.status(200).json('이미지가 변경되었습니다.');
+}
