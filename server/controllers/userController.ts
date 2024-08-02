@@ -11,7 +11,8 @@ import {
   checkWithDrawed,
   setCookie,
   CodeToKakao,
-  kakaoToJwt
+  kakaoToJwt,
+  generateProfileImage
 } from '../services/userService';
 import { CustomRequest } from '../models/jwtModel';
 import {
@@ -21,6 +22,9 @@ import {
   deleteUser
 } from '../repositories/userRepo';
 import axios from 'axios';
+import { userDto } from '../dtos/userDto';
+import { Iuser } from '../models/userModel';
+import { User } from '../entities/User';
 
 dotenv.config();
 
@@ -119,4 +123,18 @@ export async function kakaoLogin(
   } catch (err) {
     throw err;
   }
+}
+
+export async function profileImage(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const userId = (req as CustomRequest).user_id;
+  const image = (req as CustomRequest).file?.path;
+
+  const user = await generateProfileImage(userId, image);
+
+  await createdUser(user);
+  res.status(200).json('이미지가 변경되었습니다.');
 }

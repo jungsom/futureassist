@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import 'reflect-metadata';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
@@ -12,6 +13,8 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 미들웨어 설정
 app.use(

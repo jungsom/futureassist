@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { HealthRecords } from './HealthRecord';
 import { HospitalRecord } from './HospitalRecord';
+import { Comment } from './comment';
 
 @Entity()
 export class User {
@@ -27,6 +28,9 @@ export class User {
   @Column({ nullable: true })
   birth_year: number;
 
+  @Column({ nullable: true })
+  profile_image?: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 
@@ -41,4 +45,7 @@ export class User {
 
   @OneToMany(() => HospitalRecord, (record) => record.user)
   hospitalRecords: HospitalRecord[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comment: Comment[];
 }
