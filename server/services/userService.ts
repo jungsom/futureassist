@@ -176,7 +176,7 @@ export const kakaoToJwt = async (data: any) => {
       }
     });
 
-    await checkEmail(kakao.data.kakao_account.email);
+    await checkEmail(kakao.data.kakao_account);
     const kakaoUser = await generateKakao(kakao);
 
     return await generateAccessToken(kakaoUser);
