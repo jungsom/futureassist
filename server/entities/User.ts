@@ -10,6 +10,7 @@ import {
 import { HealthRecords } from './HealthRecord';
 import { HospitalRecord } from './HospitalRecord';
 import { Board } from './Board';
+import { Comment } from './comment';
 
 @Entity()
 export class User {
@@ -28,6 +29,9 @@ export class User {
   @Column({ nullable: true })
   birth_year: number;
 
+  @Column({ nullable: true })
+  profile_image?: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 
@@ -45,4 +49,7 @@ export class User {
 
   @OneToMany(() => Board, (board) => board.user)
   boards: Board[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comment: Comment[];
 }

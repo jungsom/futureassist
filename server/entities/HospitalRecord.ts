@@ -19,7 +19,9 @@ export class HospitalRecord {
   @Column()
   user_id: number;
 
-  @ManyToOne(() => User, (user) => user.hospitalRecords)
+  @ManyToOne(() => User, (user) => user.hospitalRecords, {
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   user: User;
 

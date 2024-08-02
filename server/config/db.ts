@@ -7,6 +7,8 @@ import { HospitalSpeciality } from '../entities/HospitalSpecialities';
 import { HealthRecords } from '../entities/HealthRecord';
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { Board } from '../entities/Board';
+import { Comment } from '../entities/comment';
+import { Comment_like } from '../entities/comment_like';
 
 dotenv.config();
 
@@ -27,7 +29,9 @@ export const datasource = new DataSource({
     HospitalSpeciality,
     HealthRecords,
     HospitalRecord,
-    Board
+    Board,
+    Comment,
+    Comment_like
   ]
 });
 

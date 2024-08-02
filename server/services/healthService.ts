@@ -3,10 +3,10 @@ import { User } from '../entities/User';
 import { Ihealth } from '../models/healthModel';
 
 /** 건강기록 정보 생성 */
-export const generateHealthRecord = async (userId: User, data: Ihealth) => {
+export const generateHealthRecord = async (userId: number, data: Ihealth) => {
   try {
     const health = new HealthRecords();
-    //health.user_id = userId;
+    health.user_id = userId;
     health.height = data.height;
     health.weight = data.weight;
     health.bloodsugar = data.bloodsugar;

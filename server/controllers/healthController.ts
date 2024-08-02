@@ -18,7 +18,7 @@ export const PostHealthRecord = async (
 };
 
 /** 회원 건강정보 수정 */
-/** updated_at이랑 created_at이랑 하루 차이 이내면 수정하도록 */
+
 export const UpdateHealthRecord = async (
   req: Request,
   res: Response,

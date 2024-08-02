@@ -176,10 +176,22 @@ export const kakaoToJwt = async (data: any) => {
       }
     });
 
-    await checkEmail(kakao.data.kakao_account.email);
+    await checkEmail(kakao.data.kakao_account);
     const kakaoUser = await generateKakao(kakao);
 
     return await generateAccessToken(kakaoUser);
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const generateProfileImage = async (userId: number, data?: string) => {
+  try {
+    const user = new User();
+    user.user_id = userId;
+    user.profile_image = data;
+
+    return user;
   } catch (err) {
     throw err;
   }
