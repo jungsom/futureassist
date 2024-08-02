@@ -40,12 +40,12 @@ export class User {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
 
-  @OneToMany(() => HealthRecords, (health) => health.user)
+  @OneToMany(() => HealthRecords, (health) => health.user_id)
   health: HealthRecords[];
 
   @OneToMany(() => HospitalRecord, (record) => record.user)
   hospitalRecords: HospitalRecord[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user_id)
   comment: Comment[];
 }

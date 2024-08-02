@@ -6,7 +6,9 @@ export const CommentByUserId = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  // commmentId도 보내줘야함
+};
 
 export const PostComment = async (
   req: Request,

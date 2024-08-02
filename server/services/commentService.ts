@@ -1,5 +1,6 @@
 import { Comment } from '../entities/comment';
 import { User } from '../entities/User';
+import { commentDTO } from '../dtos/commentDto';
 
 /** 댓글 정보 생성 */
 export const generateComment = async (userId: number, content: string) => {

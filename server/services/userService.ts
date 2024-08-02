@@ -165,7 +165,7 @@ export const CodeToKakao = async (code: any) => {
 };
 
 /** 카카오 토큰을 jwt로 재발급 */
-export const kakaoToJwt = async (data: any) => {
+export const kakaoToJwt = async (res: Response, data: any) => {
   try {
     const token = data.data.access_token;
     const kakao = await axios(`https://kapi.kakao.com/v2/user/me`, {
@@ -176,10 +176,15 @@ export const kakaoToJwt = async (data: any) => {
       }
     });
 
-    await checkEmail(kakao.data.kakao_account);
-    const kakaoUser = await generateKakao(kakao);
+    const kakaoUser = await selectedByEmail(kakao.data.kakao_account.email);
 
-    return await generateAccessToken(kakaoUser);
+    if (kakaoUser) {
+      return true;
+    } else {
+      const newUser = await generateKakao(kakao);
+      const jwtToken = await generateAccessToken(newUser);
+      setCookie(res, 'token', jwtToken);
+    }
   } catch (err) {
     throw err;
   }
