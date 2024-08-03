@@ -11,17 +11,18 @@ import {
 } from 'typeorm';
 import { User } from './User';
 import { Comment } from './comment';
+import { BoardLike } from './Board_like';
 
 @Entity()
 export class Board {
   @PrimaryGeneratedColumn()
   board_id: number;
 
-  @OneToMany(() => Comment, (comment) => comment.board_id)
-  comment_id: Comment[];
-
   @Column()
   user_id: number;
+
+  @Column()
+  user_name: string;
 
   @ManyToOne(() => User, (user) => user.boards)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
@@ -50,4 +51,10 @@ export class Board {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @OneToMany(() => Comment, (comment) => comment.board)
+  comments: Comment[];
+
+  @OneToMany(() => BoardLike, (boardlike) => boardlike.board)
+  like: BoardLike[];
 }

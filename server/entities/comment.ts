@@ -22,9 +22,7 @@ export class Comment {
   @Column()
   board_id: number;
 
-  @ManyToOne(() => Board, (board) => board.comment_id, {
-    onDelete: 'CASCADE'
-  })
+  @ManyToOne(() => Board, (board) => board.comments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'board_id', referencedColumnName: 'board_id' })
   board: Board;
 

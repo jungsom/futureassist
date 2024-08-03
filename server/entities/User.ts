@@ -11,6 +11,7 @@ import { HealthRecords } from './HealthRecord';
 import { HospitalRecord } from './HospitalRecord';
 import { Board } from './Board';
 import { Comment } from './comment';
+import { BoardLike } from './Board_like';
 
 @Entity()
 export class User {
@@ -52,4 +53,7 @@ export class User {
 
   @OneToMany(() => Board, (board) => board.user)
   boards: Board[];
+
+  @OneToMany(() => BoardLike, (boardlike) => boardlike.user)
+  likes: BoardLike[];
 }

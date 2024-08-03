@@ -3,7 +3,9 @@ import {
   createBoardRecord,
   updateBoardRecord,
   deleteBoardRecord,
-  getBoardRecord
+  getBoardRecord,
+  addLike,
+  removeLike
 } from '../controllers/boardController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
@@ -35,6 +37,18 @@ boardRouter.get(
   verifyAccessToken,
   validationMiddleware(BoardIdDTO, 'query'),
   getBoardRecord
+);
+boardRouter.post(
+  '/like',
+  verifyAccessToken,
+  validationMiddleware(BoardIdDTO, 'query'),
+  addLike
+);
+boardRouter.delete(
+  '/like',
+  verifyAccessToken,
+  validationMiddleware(BoardIdDTO, 'query'),
+  removeLike
 );
 
 export default boardRouter;

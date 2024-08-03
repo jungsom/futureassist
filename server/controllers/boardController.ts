@@ -3,7 +3,9 @@ import {
   createBoard,
   updateBoard,
   deleteBoard,
-  getBoardAndIncrementViews
+  getBoardAndIncrementViews,
+  addBoardLike,
+  removeBoardLike
 } from '../services/boardService';
 import { BoardDTO, BoardIdDTO } from '../dtos/boardDto';
 import { plainToClass } from 'class-transformer';
@@ -34,8 +36,8 @@ export async function updateBoardRecord(
   try {
     const userId = (req as CustomRequest).user_id;
     const body = plainToClass(BoardDTO, req.body);
-    const param = plainToClass(BoardIdDTO, req.query);
-    const result = await updateBoard(userId, body, param.board_id);
+    const boardId = plainToClass(BoardIdDTO, req.query);
+    const result = await updateBoard(userId, body, boardId);
     return res.status(200).json(result);
   } catch (err) {
     next(err);
@@ -50,8 +52,8 @@ export async function deleteBoardRecord(
 ) {
   try {
     const userId = (req as CustomRequest).user_id;
-    const param = plainToClass(BoardIdDTO, req.query);
-    const result = await deleteBoard(userId, param);
+    const boardId = plainToClass(BoardIdDTO, req.query);
+    const result = await deleteBoard(userId, boardId);
     return res.status(200).json(result);
   } catch (err) {
     next(err);
@@ -65,10 +67,43 @@ export async function getBoardRecord(
   next: NextFunction
 ) {
   try {
-    const param = plainToClass(BoardIdDTO, req.query);
-    const result = await getBoardAndIncrementViews(param);
+    const userId = (req as CustomRequest).user_id;
+    const boardId = plainToClass(BoardIdDTO, req.query);
+    const result = await getBoardAndIncrementViews(boardId, userId);
     return res.status(200).json(result);
   } catch (err) {
     next(err);
   }
 }
+
+/** 게시글 추천 등록 컨트롤러 */
+export const addLike = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = (req as any).user_id;
+    const boardId = plainToClass(BoardIdDTO, req.query);
+    const result = await addBoardLike(userId, boardId);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/** 게시글 추천 취소 컨트롤러 */
+export const removeLike = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = (req as any).user_id;
+    const boardId = plainToClass(BoardIdDTO, req.query);
+    const result = await removeBoardLike(userId, boardId);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};

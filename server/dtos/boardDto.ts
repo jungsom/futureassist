@@ -4,7 +4,6 @@ import {
   IsOptional,
   IsArray,
   ArrayMaxSize,
-  ArrayNotEmpty,
   IsInt
 } from 'class-validator';
 import { Transform } from 'class-transformer';

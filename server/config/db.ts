@@ -7,6 +7,7 @@ import { HospitalSpeciality } from '../entities/HospitalSpecialities';
 import { HealthRecords } from '../entities/HealthRecord';
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { Board } from '../entities/Board';
+import { BoardLike } from '../entities/Board_like';
 import { Comment } from '../entities/comment';
 import { Comment_like } from '../entities/comment_like';
 
@@ -30,6 +31,7 @@ export const datasource = new DataSource({
     HealthRecords,
     HospitalRecord,
     Board,
+    BoardLike,
     Comment,
     Comment_like
   ]
