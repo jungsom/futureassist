@@ -12,6 +12,7 @@ import { HospitalRecord } from './HospitalRecord';
 import { Board } from './Board';
 import { Comment } from './comment';
 import { BoardLike } from './Board_like';
+import { Chat } from './Chat'; // Chat 엔티티가 정의된 파일을 임포트
 
 @Entity()
 export class User {
@@ -44,6 +45,9 @@ export class User {
 
   @OneToMany(() => HealthRecords, (health) => health.user)
   health: HealthRecords[];
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat[];
 
   @OneToMany(() => HospitalRecord, (record) => record.user)
   hospitalRecords: HospitalRecord[];
