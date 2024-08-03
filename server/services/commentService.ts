@@ -7,7 +7,10 @@ import {
   selectByCommendId,
   softDeleteComment,
   createCommentLike,
-  selectCommentLike
+  selectCommentLike,
+  increaseCommentLikesCount,
+  hardDeleteCommentLike,
+  decreaseCommentLikesCount
 } from '../repositories/commentRepo';
 import { error } from 'console';
 import { BadRequest } from '../middlewares/error';
@@ -86,9 +89,19 @@ export const generateCommentLike = async (
       commentLike.user_id = userId;
       commentLike.comment_id = commentId;
 
-      return await createCommentLike(commentLike);
+      await createCommentLike(commentLike);
+      await increaseCommentLikesCount(commentId);
     }
   } catch (err) {
     throw new BadRequest('좋아요 등록을 실패하였습니다.');
+  }
+};
+
+export const cancelCommentLike = async (userId: number, commentId: number) => {
+  try {
+    await hardDeleteCommentLike(userId, commentId);
+    await decreaseCommentLikesCount(commentId);
+  } catch (err) {
+    throw new BadRequest('좋아요 취소를 실패하였습니다.');
   }
 };
