@@ -5,10 +5,14 @@ import {
   createComment,
   selectByBoardId,
   selectByCommendId,
-  softDeleteComment
+  softDeleteComment,
+  createCommentLike,
+  selectCommentLike
 } from '../repositories/commentRepo';
 import { error } from 'console';
 import { BadRequest } from '../middlewares/error';
+import { Comment_like } from '../entities/comment_like';
+import { CommentByBoardId } from '../controllers/commentController';
 
 /** 새로운 댓글 정보 생성 */
 export const generateComment = async (
@@ -65,5 +69,26 @@ export const deleteComment = async (userId: number, commentId: number) => {
     }
   } catch (err) {
     throw new BadRequest('댓글 삭제에 실패하였습니다.');
+  }
+};
+
+/** 좋아요 정보 생성 */
+export const generateCommentLike = async (
+  userId: number,
+  commentId: number
+) => {
+  try {
+    const IsCommentLike = await selectCommentLike(userId, commentId);
+    if (IsCommentLike) {
+      throw error;
+    } else {
+      const commentLike = new Comment_like();
+      commentLike.user_id = userId;
+      commentLike.comment_id = commentId;
+
+      return await createCommentLike(commentLike);
+    }
+  } catch (err) {
+    throw new BadRequest('좋아요 등록을 실패하였습니다.');
   }
 };

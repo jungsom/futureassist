@@ -53,7 +53,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     const accessToken = await generateAccessToken(user);
     setCookie(res, 'token', accessToken);
 
-    return res.status(200).json({ message: '로그인이 완료되었습니다.' });
+    return res.status(201).json({ message: '로그인이 완료되었습니다.' });
   } catch (err) {
     next(err);
   }
@@ -82,7 +82,7 @@ export async function updateUser(
 
     await createdUser(user);
 
-    return res.status(201).json({ message: '수정이 완료되었습니다.' });
+    return res.status(200).json({ message: '수정이 완료되었습니다.' });
   } catch (err) {
     next(err);
   }
@@ -99,7 +99,7 @@ export async function withDraw(
     const user = await selectedById(userId);
     await deleteUser(user);
 
-    return res.status(201).json({ message: '탈퇴가 완료되었습니다.' });
+    return res.status(200).json({ message: '탈퇴가 완료되었습니다.' });
   } catch (err) {
     next(err);
   }
@@ -121,7 +121,7 @@ export async function kakaoLogin(
 
     return res.status(201).json({ message: '카카오 로그인이 완료되었습니다.' });
   } catch (err) {
-    throw err;
+    next(err);
   }
 }
 
@@ -130,9 +130,13 @@ export async function profileImage(
   res: Response,
   next: NextFunction
 ) {
-  const userId = (req as CustomRequest).user_id;
-  const image = (req as CustomRequest).file?.path;
+  try {
+    const userId = (req as CustomRequest).user_id;
+    const image = (req as CustomRequest).file?.path;
 
-  await generateProfileImage(userId, image);
-  return res.status(201).json({ message: '이미지가 변경되었습니다.' });
+    await generateProfileImage(userId, image);
+    return res.status(200).json({ message: '이미지가 변경되었습니다.' });
+  } catch (err) {
+    next(err);
+  }
 }

@@ -1,5 +1,6 @@
 import { datasource } from '../config/db';
 import { Comment } from '../entities/comment';
+import { Comment_like } from '../entities/comment_like';
 
 /** comment 저장 */
 export const createComment = async (comment: Comment) => {
@@ -12,11 +13,11 @@ export const createComment = async (comment: Comment) => {
 };
 
 /** commentId 검색 */
-export const selectByBoardId = async (userId: number, boardId: number) => {
+export const selectByBoardId = async (boardId: number) => {
   try {
     const result = await datasource.query(
-      'SELECT "comment_id" FROM "comment" WHERE user_id = $1 AND board_id = $2',
-      [userId, boardId]
+      'SELECT comment_id, user_id, content, created_at, updated_at FROM "comment" WHERE board_id = $1 AND deleted_at is NULL',
+      [boardId]
     );
     return result;
   } catch (err) {
@@ -46,3 +47,44 @@ export const softDeleteComment = async (comment: Comment) => {
     throw err;
   }
 };
+
+/** commentLike 저장 */
+export const createCommentLike = async (commentLike: Comment_like) => {
+  try {
+    const commentLikeRepository = datasource.getRepository(Comment_like);
+    return await commentLikeRepository.save(commentLike);
+  } catch (err) {
+    throw err;
+  }
+};
+
+/** commentLike 삭제 */
+export const deleteCommentLike = async (userId: number, commentId: number) => {
+  try {
+    const commentLikeRepository = datasource.getRepository(Comment_like);
+    return await commentLikeRepository.delete({
+      user_id: userId,
+      comment_id: commentId
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+/** commentLike 조회 */
+export const selectCommentLike = async (userId: number, commentId: number) => {
+  try {
+    const result = await datasource.query(
+      'SELECT like_id FROM "comment_like" WHERE user_id = $1 AND comment_id = $2',
+      [userId, commentId]
+    );
+    return result[0];
+  } catch (err) {
+    throw err;
+  }
+};
+
+/** comment에 likes 저장 */
+export const increaseCommentLikesCount = async () => {};
+
+export const decreaseCommentLikesCount = async () => {};

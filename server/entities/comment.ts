@@ -40,6 +40,9 @@ export class Comment {
   @Column()
   content: string;
 
+  @Column({ nullable: true })
+  likes: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt?: Date;
 

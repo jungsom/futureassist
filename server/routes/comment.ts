@@ -3,7 +3,9 @@ import {
   PostComment,
   UpdateComment,
   DeleteCommentRecord,
-  CommentByBoardId
+  CommentByBoardId,
+  LikeComment,
+  DislikeComment
 } from '../controllers/commentController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
@@ -35,5 +37,7 @@ commentRouter.get(
   validationMiddleware(commentDTO, 'query'),
   CommentByBoardId
 );
+commentRouter.post('/like', verifyAccessToken, LikeComment);
+commentRouter.delete('/like', verifyAccessToken, DislikeComment);
 
 export default commentRouter;
