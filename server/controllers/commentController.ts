@@ -1,8 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import { CustomRequest } from '../models/jwtModel';
-import { generateComment } from '../services/commentService';
+import {
+  generateComment,
+  changeComment,
+  deleteComment
+} from '../services/commentService';
+import { commentDTO } from '../dtos/commentDto';
+import { plainToClass } from 'class-transformer';
+import { BoardIdDTO } from '../dtos/boardDto';
 
-export const CommentByUserId = async (
+/** 댓글 조회 컨트롤러 */
+export const CommentByBoardId = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -10,35 +18,56 @@ export const CommentByUserId = async (
   // commmentId도 보내줘야함
 };
 
+/** 댓글 작성 컨트롤러 */
 export const PostComment = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const userId = (req as CustomRequest).user_id;
-  const content = req.body;
+  const boardId = parseInt(req.query.board_id as string, 10);
+  const content = plainToClass(commentDTO, req.body);
 
-  await generateComment(userId, content);
+  await generateComment(userId, boardId, content);
+  return res.status(200).json({ message: '댓글이 생성되었습니다.' });
 };
 
+/** 댓글 수정 컨트롤러 */
 export const UpdateComment = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  //userid와 boardId로 commentid찾기
-  //둘다 있으면 수정 가능
+  try {
+    const userId = (req as CustomRequest).user_id;
+    const commentId = parseInt(req.query.comment_id as string, 10);
+    const content = plainToClass(commentDTO, req.body);
+
+    await changeComment(userId, commentId, content);
+    return res.status(200).json({ message: '댓글이 수정되었습니다.' });
+  } catch (err) {
+    throw err;
+  }
 };
 
-export const DeleteComment = async (
+/** 댓글 삭제 컨트롤러 */
+export const DeleteCommentRecord = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  //userid와 boardid로 commentid 찾기
-  //둘다 있으면 삭제 가능(소프트 삭제)
+  try {
+    const userId = (req as CustomRequest).user_id;
+    const commentId = parseInt(req.query.comment_id as string, 10);
+
+    await deleteComment(userId, commentId);
+    return res.status(200).json({ message: '댓글이 삭제되었습니다.' });
+  } catch (err) {
+    throw err;
+  }
 };
 
+/** 좋아요 컨트롤러 */
 export const LikeInComment = async (
   req: Request,
   res: Response,

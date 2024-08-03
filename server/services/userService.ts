@@ -69,11 +69,12 @@ export const setCookie = (
   res: Response,
   name: string,
   value: string,
-  maxAge: number = 30 * 60 * 1000
+  maxAge: number = 7 * 24 * 60 * 60 * 1000
 ) => {
   res.cookie(name, value, {
     maxAge,
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true
   });
 };
 
@@ -200,7 +201,7 @@ export const generateProfileImage = async (userId: number, data?: string) => {
     user.user_id = userId;
     user.profile_image = data;
 
-    return user;
+    await createdUser(user);
   } catch (err) {
     throw new BadRequest('이미지 업로드에 실패하였습니다.');
   }

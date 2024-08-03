@@ -119,7 +119,7 @@ export async function kakaoLogin(
     const jwtToken = await kakaoToJwt(res, kakaoToken);
     setCookie(res, 'token', jwtToken);
 
-    res.status(200).json('카카오 로그인이 완료되었습니다.');
+    return res.status(201).json({ message: '카카오 로그인이 완료되었습니다.' });
   } catch (err) {
     throw err;
   }
@@ -133,8 +133,6 @@ export async function profileImage(
   const userId = (req as CustomRequest).user_id;
   const image = (req as CustomRequest).file?.path;
 
-  const user = await generateProfileImage(userId, image);
-
-  await createdUser(user);
-  res.status(200).json('이미지가 변경되었습니다.');
+  await generateProfileImage(userId, image);
+  return res.status(201).json({ message: '이미지가 변경되었습니다.' });
 }
