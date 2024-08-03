@@ -44,19 +44,6 @@ export const deleteBoardRepository = async (boardId: number) => {
   await boardRepo.softDelete(boardId);
 };
 
-/** 게시글 조회 리포지토리 */
-export const exieByIdRepository = async (
-  boardId: number
-): Promise<Board | null> => {
-  const query = `
-    SELECT board_id, user_name, title, content, hashtag, views, likes, "updatedAt"
-    FROM board
-    WHERE board_id = $1 AND "deletedAt" IS NULL
-  `;
-  const result = await datasource.query(query, [boardId]);
-  return result[0] || null;
-};
-
 /** 게시글 조회 및 조회수 증가 리포지토리 */
 export const getBoardAndIncrementViewsRepository = async (
   boardId: number,
