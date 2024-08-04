@@ -19,7 +19,7 @@ import {
 } from '../dtos/hospitalDto';
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { IHospital } from '../models/hospitalModel';
-import { BadRequest } from '../middlewares/error';
+import { BadRequest, NotFoundError } from '../middlewares/error';
 import { formatDateToMinute } from './utils';
 
 /** 시도 데이터 조회 서비스 */
@@ -114,7 +114,7 @@ export async function getHospitalDetails(
   const result = await getHospitalDetailsRepository(searchParams);
 
   if (result.length === 0) {
-    throw new Error('Hospital not found');
+    throw new NotFoundError('해당 병원을 찾을 수 없습니다.');
   }
 
   return result[0];
@@ -138,19 +138,15 @@ export const saveHospital = async (userId: number, dto: HospitalIdDTO) => {
   const hospital = await getHospitalDetailsRepository(dto);
 
   if (!hospital) {
-    throw new BadRequest('해당 병원을 찾을 수 없습니다.');
+    throw new NotFoundError('해당 병원을 찾을 수 없습니다.');
   }
 
   const hospitalRecord = new HospitalRecord();
   hospitalRecord.user_id = userId;
   hospitalRecord.hospital_id = dto.hospital_id;
 
-  try {
-    await saveHospitalRecordRepository(hospitalRecord);
-    return { message: '병원 정보가 저장되었습니다.' };
-  } catch (err) {
-    throw new Error(`병원 저장 중 오류가 발생했습니다.`);
-  }
+  await saveHospitalRecordRepository(hospitalRecord);
+  return { message: '병원 정보가 저장되었습니다.' };
 };
 
 /** 병원 정보 삭제 서비스 */
@@ -158,7 +154,7 @@ export const deleteHospital = async (userId: number, dto: HospitalIdDTO) => {
   const hospital = await getHospitalDetailsRepository(dto);
 
   if (!hospital) {
-    throw new BadRequest('해당 병원을 찾을 수 없습니다.');
+    throw new NotFoundError('해당 병원을 찾을 수 없습니다.');
   }
 
   const existingRecord = await getHospitalRecordByUserIdAndHospitalId(
@@ -166,15 +162,11 @@ export const deleteHospital = async (userId: number, dto: HospitalIdDTO) => {
     dto.hospital_id
   );
   if (!existingRecord) {
-    throw new BadRequest('삭제할 해당 병원 기록이 없습니다.');
+    throw new NotFoundError('삭제할 해당 병원 기록이 없습니다.');
   }
 
-  try {
-    await deleteHospitalRecordRepository(userId, dto.hospital_id);
-    return { message: '병원 정보가 삭제되었습니다.' };
-  } catch (err) {
-    throw new Error(`병원 삭제 중 오류가 발생했습니다.`);
-  }
+  await deleteHospitalRecordRepository(userId, dto.hospital_id);
+  return { message: '병원 정보가 삭제되었습니다.' };
 };
 
 /** 병원 기록 조회 서비스 */
@@ -182,7 +174,7 @@ export const getHospitalRecordsByUserId = async (userId: number) => {
   const records = await getHospitalRecordsByUserIdRepository(userId);
 
   if (records.length === 0) {
-    throw new BadRequest('저장된 병원 기록이 없습니다.');
+    throw new NotFoundError('저장된 병원 기록이 없습니다.');
   }
 
   return records.map((record) => ({

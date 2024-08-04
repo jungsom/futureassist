@@ -25,6 +25,13 @@ export class BadRequest extends HttpError {
   }
 }
 
+export class NotFoundError extends HttpError {
+  constructor(message: string) {
+    super(message, 404);
+    this.name = 'NotFoundError';
+  }
+}
+
 export const errorMiddleware = (
   err: HttpError,
   req: Request,

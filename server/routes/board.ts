@@ -3,13 +3,20 @@ import {
   createBoardRecord,
   updateBoardRecord,
   deleteBoardRecord,
+  getAllBoardsRecord,
   getBoardRecord,
   addLike,
-  removeLike
+  removeLike,
+  searchBoardsByTagRecord
 } from '../controllers/boardController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
-import { BoardDTO, BoardIdDTO } from '../dtos/boardDto';
+import {
+  BoardDTO,
+  BoardIdDTO,
+  BoardPaginationDTO,
+  TagSearchDTO
+} from '../dtos/boardDto';
 
 const boardRouter = Router();
 
@@ -33,6 +40,11 @@ boardRouter.delete(
   deleteBoardRecord
 );
 boardRouter.get(
+  '/all',
+  validationMiddleware(BoardPaginationDTO, 'query'),
+  getAllBoardsRecord
+);
+boardRouter.get(
   '/',
   verifyAccessToken,
   validationMiddleware(BoardIdDTO, 'query'),
@@ -49,6 +61,11 @@ boardRouter.delete(
   verifyAccessToken,
   validationMiddleware(BoardIdDTO, 'query'),
   removeLike
+);
+boardRouter.get(
+  '/search',
+  validationMiddleware(TagSearchDTO, 'query'),
+  searchBoardsByTagRecord
 );
 
 export default boardRouter;
