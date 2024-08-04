@@ -3,11 +3,18 @@ import {
   createBoard,
   updateBoard,
   deleteBoard,
+  getAllBoards,
   getBoardAndIncrementViews,
   addBoardLike,
-  removeBoardLike
+  removeBoardLike,
+  searchBoardsByTag
 } from '../services/boardService';
-import { BoardDTO, BoardIdDTO } from '../dtos/boardDto';
+import {
+  BoardDTO,
+  BoardIdDTO,
+  BoardPaginationDTO,
+  TagSearchDTO
+} from '../dtos/boardDto';
 import { plainToClass } from 'class-transformer';
 import { CustomRequest } from '../models/jwtModel';
 
@@ -60,6 +67,21 @@ export async function deleteBoardRecord(
   }
 }
 
+/** 전체 게시글 조회 컨트롤러 */
+export const getAllBoardsRecord = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const pagination = plainToClass(BoardPaginationDTO, req.query);
+    const result = await getAllBoards(pagination);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
 /** 게시글 조회 및 조회수 증가 컨트롤러 */
 export async function getBoardRecord(
   req: Request,
@@ -102,6 +124,21 @@ export const removeLike = async (
     const userId = (req as any).user_id;
     const boardId = plainToClass(BoardIdDTO, req.query);
     const result = await removeBoardLike(userId, boardId);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/** 해시태그 검색 컨트롤러 */
+export const searchBoardsByTagRecord = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const tagSearchDto = plainToClass(TagSearchDTO, req.query);
+    const result = await searchBoardsByTag(tagSearchDto);
     res.status(200).json(result);
   } catch (err) {
     next(err);

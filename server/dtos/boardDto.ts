@@ -30,3 +30,21 @@ export class BoardIdDTO {
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   board_id: number;
 }
+
+export class BoardPaginationDTO {
+  @IsOptional()
+  @IsInt()
+  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
+  page?: number = 1;
+
+  @IsOptional()
+  @IsInt()
+  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
+  pageSize?: number = 10;
+}
+
+export class TagSearchDTO extends BoardPaginationDTO {
+  @IsNotEmpty()
+  @IsString()
+  tag: string;
+}

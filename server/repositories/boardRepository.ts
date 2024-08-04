@@ -24,7 +24,7 @@ export const checkBoardExistsRepository = async (
   userId: number
 ): Promise<Board | null> => {
   const query = `
-    SELECT board_id, user_name, title, content, hashtag, views, likes, "updatedAt"
+    SELECT *
     FROM board
     WHERE board_id = $1 AND user_id = $2 AND "deletedAt" IS NULL
   `;
@@ -42,6 +42,29 @@ export const updateBoardRepository = async (board: Board) => {
 export const deleteBoardRepository = async (boardId: number) => {
   const boardRepo = datasource.getRepository(Board);
   await boardRepo.softDelete(boardId);
+};
+
+/** 전체 게시글 조회 리포지토리 */
+export const getAllBoardsRepository = async (
+  page: number,
+  pageSize: number
+): Promise<{ boards: Board[]; total: number }> => {
+  const offset = (page - 1) * pageSize;
+  const query = `
+    SELECT board_id, user_name, title, content, hashtag, views, likes, "updatedAt"
+    FROM board
+    WHERE "deletedAt" IS NULL
+    ORDER BY "updatedAt" DESC
+    LIMIT $1 OFFSET $2
+  `;
+  const result = await datasource.query(query, [pageSize, offset]);
+  const countQuery = `
+    SELECT COUNT(*)
+    FROM board
+    WHERE "deletedAt" IS NULL
+  `;
+  const total = (await datasource.query(countQuery))[0].count;
+  return { boards: result, total: parseInt(total, 10) };
 };
 
 /** 게시글 조회 및 조회수 증가 리포지토리 */
@@ -111,4 +134,30 @@ export const incrementBoardLikes = async (boardId: number) => {
 export const decrementBoardLikes = async (boardId: number) => {
   const boardRepo = datasource.getRepository(Board);
   await boardRepo.decrement({ board_id: boardId }, 'likes', 1);
+};
+
+/** 해시태그 검색 리포지토리 */
+export const searchBoardsByTagRepository = async (
+  tag: string,
+  pageSize: number,
+  offset: number
+): Promise<{ result: Board[]; total: number }> => {
+  const query = `
+    SELECT board_id, user_id, user_name, title, content, hashtag, views, likes, "updatedAt"
+    FROM board
+    WHERE hashtag LIKE $1 AND "deletedAt" IS NULL
+    ORDER BY "updatedAt" DESC
+    LIMIT $2 OFFSET $3
+  `;
+
+  const countQuery = `
+    SELECT COUNT(*) as total
+    FROM board
+    WHERE hashtag LIKE $1 AND "deletedAt" IS NULL
+  `;
+  const searchtag = `%${tag}%`;
+  const result = await datasource.query(query, [searchtag, pageSize, offset]);
+  const total = (await datasource.query(countQuery, [searchtag]))[0].total;
+
+  return { result, total: parseInt(total, 10) };
 };
