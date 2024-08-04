@@ -59,7 +59,10 @@ export const createCommentLike = async (commentLike: Comment_like) => {
 };
 
 /** commentLike 삭제 */
-export const deleteCommentLike = async (userId: number, commentId: number) => {
+export const hardDeleteCommentLike = async (
+  userId: number,
+  commentId: number
+) => {
   try {
     const commentLikeRepository = datasource.getRepository(Comment_like);
     return await commentLikeRepository.delete({
@@ -85,6 +88,28 @@ export const selectCommentLike = async (userId: number, commentId: number) => {
 };
 
 /** comment에 likes 저장 */
-export const increaseCommentLikesCount = async () => {};
+export const increaseCommentLikesCount = async (commentId: number) => {
+  try {
+    const commentRepository = datasource.getRepository(Comment);
+    return await commentRepository.increment(
+      { comment_id: commentId },
+      'likes',
+      1
+    );
+  } catch (err) {
+    throw err;
+  }
+};
 
-export const decreaseCommentLikesCount = async () => {};
+export const decreaseCommentLikesCount = async (commentId: number) => {
+  try {
+    const commentRepository = datasource.getRepository(Comment);
+    return await commentRepository.decrement(
+      { comment_id: commentId },
+      'likes',
+      1
+    );
+  } catch (err) {
+    throw err;
+  }
+};
