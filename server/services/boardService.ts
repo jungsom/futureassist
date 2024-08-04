@@ -6,6 +6,7 @@ import {
   getAllBoardsRepository,
   getBoardAndIncrementViewsRepository,
   createBoardLike,
+  findBoardLike,
   deleteBoardLike,
   incrementBoardLikes,
   decrementBoardLikes,
@@ -18,7 +19,7 @@ import {
   TagSearchDTO
 } from '../dtos/boardDto';
 import { Board } from '../entities/Board';
-import { NotFoundError } from '../middlewares/error';
+import { BadRequest, NotFoundError } from '../middlewares/error';
 import { formatDateToMinute } from './utils';
 import { IBoard } from '../models/boardModel';
 
@@ -113,6 +114,11 @@ export const getBoardAndIncrementViews = async (
 
 /** 게시글 추천 등록 서비스 */
 export const addBoardLike = async (userId: number, idDto: BoardIdDTO) => {
+  const existingLike = await findBoardLike(userId, idDto.board_id);
+  if (existingLike) {
+    throw new BadRequest('이미 추천 등록을 하셨습니다.');
+  }
+
   await createBoardLike(userId, idDto.board_id);
   await incrementBoardLikes(idDto.board_id);
 
@@ -121,6 +127,11 @@ export const addBoardLike = async (userId: number, idDto: BoardIdDTO) => {
 
 /** 게시글 추천 취소 서비스 */
 export const removeBoardLike = async (userId: number, idDto: BoardIdDTO) => {
+  const existingLike = await findBoardLike(userId, idDto.board_id);
+  if (!existingLike) {
+    throw new BadRequest('추천을 등록하지 않았습니다.');
+  }
+
   await deleteBoardLike(userId, idDto.board_id);
   await decrementBoardLikes(idDto.board_id);
 
