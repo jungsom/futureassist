@@ -143,7 +143,7 @@ export const searchBoardsByTagRepository = async (
   offset: number
 ): Promise<{ result: Board[]; total: number }> => {
   const query = `
-    SELECT board_id, user_id, user_name, title, content, hashtag, views, likes, "updatedAt"
+    SELECT board_id, user_name, title, content, hashtag, views, likes, "updatedAt"
     FROM board
     WHERE hashtag LIKE $1 AND "deletedAt" IS NULL
     ORDER BY "updatedAt" DESC
