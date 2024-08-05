@@ -144,6 +144,8 @@ export const saveHospital = async (userId: number, dto: HospitalIdDTO) => {
   const hospitalRecord = new HospitalRecord();
   hospitalRecord.user_id = userId;
   hospitalRecord.hospital_id = dto.hospital_id;
+  hospitalRecord.medical_devices = hospital[0].medical_devices as any;
+  hospitalRecord.specialities = hospital[0].specialities as any;
 
   await saveHospitalRecordRepository(hospitalRecord);
   return { message: '병원 정보가 저장되었습니다.' };

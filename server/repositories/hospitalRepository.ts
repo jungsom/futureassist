@@ -280,10 +280,10 @@ export const getHospitalRecordsByUserIdRepository = async (
   userId: number
 ): Promise<IHospitalRecord[]> => {
   const query = `
-    SELECT h.hospital_id, h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos,
-      hr."createdAt"
-    FROM hospital h
-    INNER JOIN hospital_record hr ON h.hospital_id = hr.hospital_id
+    SELECT hr.hospital_id, hr.user_id, hr.medical_devices, hr.specialities, hr."createdAt",
+      h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos
+    FROM hospital_record hr
+    INNER JOIN hospital h ON hr.hospital_id = h.hospital_id
     WHERE hr.user_id = $1 AND hr."deletedAt" IS NULL
     ORDER BY hr."createdAt" DESC
   `;
