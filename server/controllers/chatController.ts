@@ -6,12 +6,15 @@ import { CreateChatDTO } from '../dtos/chatDto';
 
 export async function getChat(req: Request, res: Response, next: NextFunction) {
     const { input } = req.body;
+    const userId = (req as CustomRequest).user_id;
     try {
-        const response = await axios.post('http://localhost:8000/api/chat', { input });
+        console.log('Sending request to external API with data:', { input, userId});
+        const response = await axios.post('http://localhost:8000/api/chat', { 
+            input, userId
+        });
         const { disease, department, type } = response.data;
 
-        if (type === 3) {
-            const userId = (req as CustomRequest).user_id;
+        if (type === 3) {    
             const chatData: CreateChatDTO = { disease, department, user_id: userId };
             await saveChatRepository(chatData);
         }
@@ -20,4 +23,4 @@ export async function getChat(req: Request, res: Response, next: NextFunction) {
     } catch (err) {
         next(err);
     }
-}
+} 
