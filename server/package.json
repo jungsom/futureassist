@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Future Assist Server",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "cross-env TZ=Asia/Seoul nodemon -x ts-node index.ts",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,html,css,md}\""
   },
   "author": "futureassist_backend",
@@ -20,6 +20,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

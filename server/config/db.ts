@@ -34,15 +34,26 @@ export const datasource = new DataSource({
     Board,
     BoardLike,
     Comment,
+<<<<<<< HEAD
     Comment_like,
     Chat
   ]
+=======
+    Comment_like
+  ],
+  extra: {
+    options: '-c timezone=Asia/Seoul'
+  }
+>>>>>>> feature_board
 });
 
 // DB 연결
 datasource
   .initialize()
-  .then(() => console.log('DB에 연결되었습니다.'))
+  .then(async () => {
+    console.log('DB에 연결되었습니다.');
+    await datasource.query(`SET TIME ZONE 'Asia/Seoul';`); // 타임존 설정
+  })
   .catch((err: Error) => console.error('DB 연결 실패', err.stack));
 
 export default datasource;

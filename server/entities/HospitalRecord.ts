@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 import { User } from './User';
 import { Hospital } from './Hospital';
+import { MedicalDevice } from './MedicalDevices';
+import { HospitalSpeciality } from './HospitalSpecialities';
 
 @Entity()
 export class HospitalRecord {
@@ -31,6 +33,12 @@ export class HospitalRecord {
   @ManyToOne(() => Hospital, (hospital) => hospital.hospitalRecords)
   @JoinColumn({ name: 'hospital_id', referencedColumnName: 'hospital_id' })
   hospital: Hospital;
+
+  @Column('jsonb', { nullable: true })
+  medical_devices: MedicalDevice[];
+
+  @Column('jsonb', { nullable: true })
+  specialities: HospitalSpeciality[];
 
   @CreateDateColumn()
   createdAt: Date;

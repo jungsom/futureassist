@@ -10,7 +10,7 @@ export interface IHospital {
   dong_addr?: string;
   x_pos?: number;
   y_pos?: number;
-  medicalDevices: IMedicalDevice[];
+  medical_devices: IMedicalDevice[];
   specialities: IHospitalSpeciality[];
   distance?: number;
 }
