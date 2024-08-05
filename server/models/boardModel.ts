@@ -6,5 +6,5 @@ export interface IBoard {
   content: string;
   hashtag: string[];
   views: number;
-  updatedAt: string;
+  createdAt: string;
 }
