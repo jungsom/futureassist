@@ -34,17 +34,12 @@ export const datasource = new DataSource({
     Board,
     BoardLike,
     Comment,
-<<<<<<< HEAD
     Comment_like,
     Chat
-  ]
-=======
-    Comment_like
   ],
   extra: {
     options: '-c timezone=Asia/Seoul'
   }
->>>>>>> feature_board
 });
 
 // DB 연결

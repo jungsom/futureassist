@@ -19,10 +19,11 @@ export const CommentByBoardId = async (
   next: NextFunction
 ) => {
   try {
+    const userId = (req as CustomRequest).user_id;
     const boardId = parseInt(req.query.board_id as string, 10);
 
-    const comments = await selectByBoardId(boardId);
-    return res.status(200).json(comments);
+    const comments = await selectByBoardId(userId, boardId);
+    return res.status(200).json({ data: comments });
   } catch (err) {
     next(err);
   }

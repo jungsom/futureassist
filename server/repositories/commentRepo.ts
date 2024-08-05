@@ -12,20 +12,32 @@ export const createComment = async (comment: Comment) => {
   }
 };
 
-/** commentId 검색 */
-export const selectByBoardId = async (boardId: number) => {
+/** 게시글에 대한 전체 comments 검색 */
+export const selectByBoardId = async (userId: number, boardId: number) => {
   try {
     const result = await datasource.query(
-      'SELECT comment_id, user_id, content, created_at, updated_at FROM "comment" WHERE board_id = $1 AND deleted_at is NULL',
-      [boardId]
+      `SELECT a.comment_id, c.name as user_name, a.content, 
+      TO_CHAR(a.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
+      TO_CHAR(a.updated_at, 'YYYY-MM-DD HH24:MI') as updated_at,
+      NOT EXISTS (
+      SELECT like_id
+      FROM "comment_like" b
+      WHERE a.comment_id = b.comment_id
+      AND b.user_id = $1
+      ) as canLike
+      FROM "comment" a
+      LEFT JOIN "user" c ON a.user_id = c.user_id
+      WHERE a.board_id = $2 AND a.deleted_at is NULL`,
+      [userId, boardId]
     );
+
     return result;
   } catch (err) {
     throw err;
   }
 };
 
-/** comment 검색 */
+/** 특정 comment 검색 */
 export const selectByCommendId = async (commentId: number) => {
   try {
     const result = await datasource.query(

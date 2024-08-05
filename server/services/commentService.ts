@@ -12,6 +12,7 @@ import {
   hardDeleteCommentLike,
   decreaseCommentLikesCount
 } from '../repositories/commentRepo';
+import { selectedById } from '../repositories/userRepo';
 import { error } from 'console';
 import { BadRequest } from '../middlewares/error';
 import { Comment_like } from '../entities/comment_like';
@@ -24,6 +25,7 @@ export const generateComment = async (
   dto: commentDTO
 ) => {
   try {
+    const user = await selectedById(userId);
     const comment = new Comment();
     comment.content = dto.content;
     comment.board_id = boardId;
