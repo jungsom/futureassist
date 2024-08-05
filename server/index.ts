@@ -24,7 +24,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // 미들웨어 설정
 app.use(
   cors({
-    origin: 'http://localhost:3000/',
+    origin: 'http://localhost:3000',
     credentials: true
   })
 );
