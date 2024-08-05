@@ -7,9 +7,10 @@ import express from 'express';
 import cors from 'cors';
 import userRouter from './routes/user';
 import hospitalRouter from './routes/hospital';
-import chatRouter from './routes/chat'
+import chatRouter from './routes/chat';
 import boardRouter from './routes/board';
 import commentRouter from './routes/comment';
+import healthRouter from './routes/health';
 import { errorMiddleware } from './middlewares/error';
 import { verifyAccessToken } from './middlewares/jwt';
 
@@ -40,6 +41,7 @@ app.use('/api/hospital', hospitalRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/board', boardRouter);
 app.use('/api/comment', commentRouter);
+app.use('/api/health', healthRouter);
 
 // 에러 처리 미들웨어
 app.use(errorMiddleware);

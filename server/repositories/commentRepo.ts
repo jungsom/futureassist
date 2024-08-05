@@ -16,7 +16,9 @@ export const createComment = async (comment: Comment) => {
 export const selectByBoardId = async (userId: number, boardId: number) => {
   try {
     const result = await datasource.query(
-      `SELECT a.comment_id, c.name as user_name, a.content, a.created_at, a.updated_at,
+      `SELECT a.comment_id, c.name as user_name, a.content, 
+      TO_CHAR(a.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
+      TO_CHAR(a.updated_at, 'YYYY-MM-DD HH24:MI') as updated_at,
       NOT EXISTS (
       SELECT like_id
       FROM "comment_like" b

@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { CustomRequest } from '../models/jwtModel';
-import { generateHealthRecord } from '../services/healthService';
 import {
-  createdHealthRecord,
-  selectedHealthRecord
-} from '../repositories/healthRepo';
+  changeHealthRecord,
+  generateHealthRecord
+} from '../services/healthService';
+import { plainToClass } from 'class-transformer';
+import { healthRecordDto } from '../dtos/healthDto';
+import { selectHealthRecord } from '../repositories/healthRepo';
 
 /** 회원 건강정보 등록 */
 export const PostHealthRecord = async (
@@ -12,21 +14,33 @@ export const PostHealthRecord = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userId = (req as CustomRequest).user_id;
-  //const healthRecord = await generateHealthRecord(userId, req.body);
-  //await createdHealthRecord(healthRecord);
+  try {
+    const userId = (req as CustomRequest).user_id;
+    const healthRecord = plainToClass(healthRecordDto, req.body);
+
+    await generateHealthRecord(userId, healthRecord);
+    return res.status(200).json({ message: '건강기록이 생성되었습니다.' });
+  } catch (err) {
+    next(err);
+  }
 };
 
 /** 회원 건강정보 수정 */
-
 export const UpdateHealthRecord = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const userId = (req as CustomRequest).user_id;
-  //const user = await selectedHealthRecord(userId);
-  //const editableTime = user.created_at - user.updated_at;
+  try {
+    const userId = (req as CustomRequest).user_id;
+    const healthId = parseInt(req.query.health_id as string, 10);
+    const healthRecord = plainToClass(healthRecordDto, req.body);
+
+    await changeHealthRecord(userId, healthId, healthRecord);
+    return res.status(200).json({ message: '건강기록이 변경되었습니다.' });
+  } catch (err) {
+    next(err);
+  }
 };
 
 /** 회원 건강정보 조회 */
@@ -36,6 +50,7 @@ export const HealthRecordByUserId = async (
   next: NextFunction
 ) => {
   const userId = (req as CustomRequest).user_id;
-  //const healthRecord = await selectedHealthRecord(userId);
-  //return healthRecord;
+  const healthRecord = await selectHealthRecord(userId);
+
+  return res.status(200).json({ data: healthRecord });
 };
