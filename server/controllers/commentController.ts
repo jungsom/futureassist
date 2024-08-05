@@ -4,17 +4,13 @@ import {
   generateComment,
   changeComment,
   deleteComment,
-  generateCommentLike
+  generateCommentLike,
+  cancelCommentLike
 } from '../services/commentService';
 import { commentDTO } from '../dtos/commentDto';
 import { plainToClass } from 'class-transformer';
 import { BoardIdDTO } from '../dtos/boardDto';
-import {
-  selectByBoardId,
-  deleteCommentLike,
-  increaseCommentLikesCount,
-  decreaseCommentLikesCount
-} from '../repositories/commentRepo';
+import { selectByBoardId } from '../repositories/commentRepo';
 
 /** 댓글 조회 컨트롤러 */
 export const CommentByBoardId = async (
@@ -23,10 +19,11 @@ export const CommentByBoardId = async (
   next: NextFunction
 ) => {
   try {
+    const userId = (req as CustomRequest).user_id;
     const boardId = parseInt(req.query.board_id as string, 10);
 
-    const comments = await selectByBoardId(boardId);
-    return res.status(200).json(comments);
+    const comments = await selectByBoardId(userId, boardId);
+    return res.status(200).json({ data: comments });
   } catch (err) {
     next(err);
   }
@@ -96,7 +93,6 @@ export const LikeComment = async (
     const commentId = parseInt(req.query.comment_id as string, 10);
 
     await generateCommentLike(userId, commentId);
-    await increaseCommentLikesCount();
     return res.status(200).json({ message: '좋아요를 눌렀습니다.' });
   } catch (err) {
     next(err);
@@ -113,8 +109,7 @@ export const DislikeComment = async (
     const userId = (req as CustomRequest).user_id;
     const commentId = parseInt(req.query.comment_id as string, 10);
 
-    await deleteCommentLike(userId, commentId);
-    await decreaseCommentLikesCount();
+    await cancelCommentLike(userId, commentId);
     return res.status(200).json({ message: '좋아요를 취소했습니다.' });
   } catch (err) {
     next(err);

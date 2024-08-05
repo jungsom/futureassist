@@ -5,6 +5,7 @@ import { Hospital } from '../entities/Hospital';
 import { MedicalDevice } from '../entities/MedicalDevices';
 import { HospitalSpeciality } from '../entities/HospitalSpecialities';
 import { HealthRecords } from '../entities/HealthRecord';
+import { Chat } from '../entities/Chat';
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { Board } from '../entities/Board';
 import { BoardLike } from '../entities/Board_like';
@@ -33,7 +34,8 @@ export const datasource = new DataSource({
     Board,
     BoardLike,
     Comment,
-    Comment_like
+    Comment_like,
+    Chat
   ],
   extra: {
     options: '-c timezone=Asia/Seoul'
