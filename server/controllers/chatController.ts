@@ -3,13 +3,19 @@ import axios from 'axios';
 import { CustomRequest } from '../models/jwtModel';
 import { saveChatRepository } from '../repositories/chatRepository';
 import { CreateChatDTO } from '../dtos/chatDto';
+import dotenv from 'dotenv';
+dotenv.config();
+const baseURL = process.env.CHAT_URL
 
 export async function getChat(req: Request, res: Response, next: NextFunction) {
     const { input } = req.body;
     const userId = (req as CustomRequest).user_id;
     try {
-        console.log('Sending request to external API with data:', { input, userId});
-        const response = await axios.post('http://localhost:8000/api/chat', { 
+        if (!baseURL) {
+            throw new Error('CHAT_URL is not defined in the environment variables');
+        }
+        console.log('Sending request to external API with data:', { baseURL, input, userId});
+        const response = await axios.post(`${baseURL}/api/chat`, { 
             input, userId
         });
         const { disease, department, type } = response.data;
