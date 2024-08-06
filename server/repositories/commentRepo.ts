@@ -28,7 +28,7 @@ export const selectByBoardId = async (userId: number, boardId: number) => {
       FROM "comment" a
       LEFT JOIN "user" c ON a.user_id = c.user_id
       WHERE a.board_id = $2 AND a.deleted_at is NULL
-      ORDER BY a.created_at DESC`,
+      ORDER BY a.created_at ASC`,
       [userId, boardId]
     );
 

@@ -82,10 +82,7 @@ export const getAllBoards = async (
 
   const totalPages = Math.ceil(total / pageSize);
   return {
-    data: boards.map((board) => ({
-      ...board,
-      createdAt: formatDateToMinute(new Date(board.createdAt))
-    })),
+    data: boards,
     total,
     currentPage: page,
     totalPages
@@ -108,7 +105,6 @@ export const getBoardAndIncrementViews = async (
 
   return {
     ...board,
-    createdAt: formatDateToMinute(new Date(board.createdAt)),
     canLike
   };
 };
@@ -156,10 +152,7 @@ export const searchBoardsByTag = async (
   }
 
   return {
-    data: result.map((board) => ({
-      ...board,
-      createdAt: formatDateToMinute(new Date(board.createdAt))
-    })),
+    data: result,
     total,
     page
   };
@@ -183,10 +176,7 @@ export const getUserBoardRecords = async (
   }
 
   return {
-    records: records.map((record) => ({
-      ...record,
-      createdAt: formatDateToMinute(new Date(record.createdAt))
-    })),
+    records,
     total
   };
 };

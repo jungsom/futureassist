@@ -51,7 +51,8 @@ export const getAllBoardsRepository = async (
 ): Promise<{ boards: Board[]; total: number }> => {
   const offset = (page - 1) * pageSize;
   const query = `
-    SELECT board_id, user_name, title, content, hashtag, views, likes, "createdAt"
+    SELECT board_id, user_name, title, content, hashtag, views, likes,
+    TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
     FROM board
     WHERE "deletedAt" IS NULL
     ORDER BY "createdAt" DESC
@@ -80,7 +81,8 @@ export const getBoardAndIncrementViewsRepository = async (
 
   // 게시글 조회
   const board = await boardRepo.query(
-    `SELECT board_id, user_name, title, content, hashtag, views, likes, "createdAt"
+    `SELECT board_id, user_name, title, content, hashtag, views, likes,
+     TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
      FROM board
      WHERE board_id = $1
      AND "deletedAt" IS NULL`,
@@ -143,7 +145,8 @@ export const searchBoardsByTagRepository = async (
   offset: number
 ): Promise<{ result: Board[]; total: number }> => {
   const query = `
-    SELECT board_id, user_name, title, content, hashtag, views, likes, "createdAt"
+    SELECT board_id, user_name, title, content, hashtag, views, likes,
+    TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
     FROM board
     WHERE hashtag LIKE $1 AND "deletedAt" IS NULL
     ORDER BY "createdAt" DESC
@@ -171,7 +174,8 @@ export const getUserBoardRecordsRepository = async (
   const offset = (page - 1) * pageSize;
 
   const query = `
-    SELECT board_id, title, views, "createdAt"
+    SELECT board_id, title, views,
+    TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
     FROM board
     WHERE user_id = $1 AND "deletedAt" IS NULL
     ORDER BY "createdAt" DESC
