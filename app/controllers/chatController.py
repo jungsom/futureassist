@@ -33,7 +33,6 @@ def chatAnswer(input, userid, a2d, medi_noun, okt, model, tokenizer, device):
         print(response)
         result = Answer(
             answer=response,
-            type = 1
         )
     else:
         predicted_output = predict(input, model, tokenizer, device)
@@ -42,7 +41,6 @@ def chatAnswer(input, userid, a2d, medi_noun, okt, model, tokenizer, device):
             disease = disease,
             department = department,
             answer = predicted_output,
-            type = 3
         )
     chat_controller_logger.info(f'UserID: {userid}')
     chat_controller_logger.info(f'Input: {input}')

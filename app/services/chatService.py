@@ -64,7 +64,7 @@ def chat_with_gpt(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "너는 의료 전문 상담 챗봇이야. 사용자의 상태를 고려한 병명을 포함하여 200자 이내의 답변을 하고, 사용자가 병명과 관련된 추가질문을(검진, 식이, 생활, 약물, 예방, 운동, 원인, 재활, 정의, 증상, 진단, 치료) 할 수 있도록 유도해줘."},
+            {"role": "system", "content": "너는 의료 전문 상담 챗봇 헬시메이트야. 사용자의 상태를 고려한 병명을 포함하여 200자 이내의 답변을 하고, 사용자가 병명과 관련된 추가질문을(검진, 식이, 생활, 약물, 예방, 운동, 원인, 재활, 정의, 증상, 진단, 치료) 할 수 있도록 유도해줘."},
             {"role": "user", "content": prompt}
         ],
         max_tokens=256,
