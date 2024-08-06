@@ -5,7 +5,7 @@ import { saveChatRepository } from '../repositories/chatRepository';
 import { CreateChatDTO } from '../dtos/chatDto';
 import dotenv from 'dotenv';
 import { IHospitalReccomendation } from '../models/chatModel';
-import { chatRequire } from './chatRequire';
+import { chatRequire } from '../models/chatModel'
 dotenv.config();
 const chatURL = process.env.CHAT_URL
 const baseURL = process.env.BASE_URL
