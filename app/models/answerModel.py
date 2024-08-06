@@ -5,3 +5,4 @@ class Answer(BaseModel):
     disease: Optional[str] = None
     department: Optional[str] = None
     answer: Optional[str] = None
+    saved: bool = False

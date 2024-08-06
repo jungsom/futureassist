@@ -41,6 +41,7 @@ def chatAnswer(input, userid, a2d, medi_noun, okt, model, tokenizer, device):
             disease = disease,
             department = department,
             answer = predicted_output,
+            saved=True
         )
     chat_controller_logger.info(f'UserID: {userid}')
     chat_controller_logger.info(f'Input: {input}')
