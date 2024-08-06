@@ -1,7 +1,5 @@
 import subprocess
 import sys
-
-# 패키지 목록
 packages = [
     "accelerate==0.33.0",
     "aiohttp==3.9.5",
@@ -129,7 +127,5 @@ packages = [
     "openai==0.28.0",
     "python-dotenv"
 ]
-
-# 패키지 설치
 for package in packages:
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])

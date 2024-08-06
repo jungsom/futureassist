@@ -17,9 +17,9 @@ or
 
     python3 install_packages.py
 
-설치 완료 후, futureassist_server에서 다음 명령어로 서버 실행
+설치 완료 후, futureassist_serve/app에서 다음 명령어로 서버 실행
 
-    uvicorn app.main:app --reload
+    uvicorn main:app --reload
 
 ## 모델 다운 방법(최초1번)
 ### 1. Git LFS 설치
