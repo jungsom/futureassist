@@ -7,7 +7,8 @@ import {
   getBoardRecord,
   addLike,
   removeLike,
-  searchBoardsByTagRecord
+  searchBoardsByTagRecord,
+  getUserBoardRecordsController
 } from '../controllers/boardController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
@@ -66,6 +67,12 @@ boardRouter.get(
   '/search',
   validationMiddleware(TagSearchDTO, 'query'),
   searchBoardsByTagRecord
+);
+boardRouter.get(
+  '/record',
+  verifyAccessToken,
+  validationMiddleware(BoardPaginationDTO, 'query'),
+  getUserBoardRecordsController
 );
 
 export default boardRouter;

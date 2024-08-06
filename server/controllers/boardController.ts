@@ -7,7 +7,8 @@ import {
   getBoardAndIncrementViews,
   addBoardLike,
   removeBoardLike,
-  searchBoardsByTag
+  searchBoardsByTag,
+  getUserBoardRecords
 } from '../services/boardService';
 import {
   BoardDTO,
@@ -144,3 +145,19 @@ export const searchBoardsByTagRecord = async (
     next(err);
   }
 };
+
+/** 사용자 게시판 기록 조회 컨트롤러 */
+export async function getUserBoardRecordsController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const userId = (req as any).user_id;
+    const query = plainToClass(BoardPaginationDTO, req.query);
+    const result = await getUserBoardRecords(userId, query);
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}

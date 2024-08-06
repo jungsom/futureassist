@@ -10,7 +10,8 @@ import {
   deleteBoardLike,
   incrementBoardLikes,
   decrementBoardLikes,
-  searchBoardsByTagRepository
+  searchBoardsByTagRepository,
+  getUserBoardRecordsRepository
 } from '../repositories/boardRepository';
 import {
   BoardDTO,
@@ -161,5 +162,31 @@ export const searchBoardsByTag = async (
     })),
     total,
     page
+  };
+};
+
+/** 사용자 게시판 기록 조회 서비스 */
+export const getUserBoardRecords = async (
+  userId: number,
+  pagination: BoardPaginationDTO
+): Promise<{ records: any[]; total: number }> => {
+  const { page = 1, pageSize = 10 } = pagination;
+
+  const { records, total } = await getUserBoardRecordsRepository(
+    userId,
+    page,
+    pageSize
+  );
+
+  if (records.length === 0) {
+    throw new NotFoundError('게시글 기록이 없습니다.');
+  }
+
+  return {
+    records: records.map((record) => ({
+      ...record,
+      createdAt: formatDateToMinute(new Date(record.createdAt))
+    })),
+    total
   };
 };
