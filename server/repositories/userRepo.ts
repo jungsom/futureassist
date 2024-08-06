@@ -13,7 +13,7 @@ export const createdUser = async (user: User) => {
 export const selectedByEmail = async (email: string) => {
   try {
     const result = await datasource.query(
-      'SELECT user_id, email, password, birth_year, name FROM "user" WHERE email = $1',
+      'SELECT user_id, email, password, birth_year, name, profile_image FROM "user" WHERE email = $1',
       [email]
     );
     return result[0];
@@ -25,7 +25,7 @@ export const selectedByEmail = async (email: string) => {
 export const selectedById = async (id: number) => {
   try {
     const result = await datasource.query(
-      'SELECT user_id, email, password, birth_year, name FROM "user" WHERE user_id = $1',
+      'SELECT email, birth_year, name, profile_image FROM "user" WHERE user_id = $1',
       [id]
     );
     return result[0];
