@@ -88,6 +88,22 @@ export async function updateUser(
   }
 }
 
+/** 회원조회 컨트롤러 */
+export async function UserByUserId(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const userId = (req as CustomRequest).user_id;
+    const user = await selectedById(userId);
+
+    return res.status(200).json({ data: user });
+  } catch (err) {
+    next(err);
+  }
+}
+
 /** 회원탈퇴 컨트롤러 */
 export async function withDraw(
   req: Request,
@@ -104,8 +120,6 @@ export async function withDraw(
     next(err);
   }
 }
-
-// 토큰 재발급 함수
 
 // 카카오 액세스 토큰 발급
 export async function kakaoLogin(
@@ -132,7 +146,7 @@ export async function profileImage(
 ) {
   try {
     const userId = (req as CustomRequest).user_id;
-    const image = (req as CustomRequest).file?.path;
+    const image = (req.file as Express.MulterS3.File).location;
 
     await generateProfileImage(userId, image);
     return res.status(200).json({ message: '이미지가 변경되었습니다.' });

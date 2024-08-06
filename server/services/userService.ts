@@ -112,7 +112,6 @@ export const changeUserInfo = async (userId: number, data: Iuser) => {
 
     const user = new User();
     user.user_id = userId;
-    user.email = data.email;
     user.name = data.name;
     user.password = hashedPassword;
     user.birth_year = data.birth_year;
