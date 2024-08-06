@@ -5,9 +5,7 @@ import {
   Length,
   IsEmail,
   Min,
-  Max,
-  IsOptional,
-  IsDate
+  Max
 } from 'class-validator';
 
 export class registerDTO {

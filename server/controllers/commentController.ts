@@ -9,7 +9,6 @@ import {
 } from '../services/commentService';
 import { commentDTO } from '../dtos/commentDto';
 import { plainToClass } from 'class-transformer';
-import { BoardIdDTO } from '../dtos/boardDto';
 import { selectByBoardId } from '../repositories/commentRepo';
 
 /** 댓글 조회 컨트롤러 */

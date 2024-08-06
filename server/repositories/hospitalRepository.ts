@@ -6,7 +6,6 @@ import {
 } from '../dtos/hospitalDto';
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { IHospital, IHospitalRecord } from '../models/hospitalModel';
-import { BadRequest } from '../middlewares/error';
 
 /** 시도 데이터 조회 리포지토리 */
 export const getSidoAddrRepository = async (): Promise<string[]> => {
@@ -280,7 +279,8 @@ export const getHospitalRecordsByUserIdRepository = async (
   userId: number
 ): Promise<IHospitalRecord[]> => {
   const query = `
-    SELECT hr.hospital_id, hr.user_id, hr.medical_devices, hr.specialities, hr."createdAt",
+    SELECT hr.hospital_id, hr.user_id, hr.medical_devices, hr.specialities,
+      TO_CHAR(hr."createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt",
       h.name, h.type, h.telno, h.url, h.addr, h.sido_addr, h.sigu_addr, h.dong_addr, h.x_pos, h.y_pos
     FROM hospital_record hr
     INNER JOIN hospital h ON hr.hospital_id = h.hospital_id

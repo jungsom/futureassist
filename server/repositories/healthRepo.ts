@@ -1,6 +1,5 @@
 import { datasource } from '../config/db';
 import { HealthRecords } from '../entities/HealthRecord';
-import { User } from '../entities/User';
 
 /** 건강정보 생성 */
 export const createHealthRecord = async (record: HealthRecords) => {

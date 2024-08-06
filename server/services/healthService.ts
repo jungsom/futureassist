@@ -1,10 +1,6 @@
-import { plainToClass } from 'class-transformer';
 import { healthRecordDto } from '../dtos/healthDto';
-import { HealthRecords } from '../entities/HealthRecord';
-import { User } from '../entities/User';
 import { BadRequest } from '../middlewares/error';
-import { Ihealth } from '../models/healthModel';
-import { format, parseISO, isBefore } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 
 import {
   createHealthRecord,
@@ -12,7 +8,6 @@ import {
   selectHealthRecord
 } from '../repositories/healthRepo';
 import { error } from 'console';
-import { notEqual } from 'assert';
 
 /** 새로운 건강기록 정보 생성 (1일 1제한) */
 export const generateHealthRecord = async (

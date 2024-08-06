@@ -3,8 +3,6 @@ import { User } from '../entities/User';
 import {
   createdUser,
   selectedByEmail,
-  selectedById,
-  deleteUser,
   selectedByDeletedAt
 } from '../repositories/userRepo';
 import bcrypt from 'bcrypt';
@@ -13,7 +11,7 @@ import dotenv from 'dotenv';
 import axios from 'axios';
 
 import { Response } from 'express';
-import { Unauthorized, BadRequest } from '../middlewares/error';
+import { BadRequest } from '../middlewares/error';
 import { error } from 'console';
 
 dotenv.config();

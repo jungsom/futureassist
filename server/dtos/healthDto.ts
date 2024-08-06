@@ -1,5 +1,4 @@
-import { IsInt, IsNumber } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsInt } from 'class-validator';
 import { HealthRecords } from '../entities/HealthRecord';
 
 export class healthRecordDto {

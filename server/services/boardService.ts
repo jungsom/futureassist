@@ -21,7 +21,6 @@ import {
 } from '../dtos/boardDto';
 import { Board } from '../entities/Board';
 import { BadRequest, NotFoundError } from '../middlewares/error';
-import { formatDateToMinute } from './utils';
 import { IBoard } from '../models/boardModel';
 
 /** 게시글 생성 서비스 */
@@ -81,12 +80,7 @@ export const getAllBoards = async (
   const { boards, total } = await getAllBoardsRepository(page, pageSize);
 
   const totalPages = Math.ceil(total / pageSize);
-  return {
-    data: boards,
-    total,
-    currentPage: page,
-    totalPages
-  };
+  return { data: boards, total, currentPage: page, totalPages };
 };
 
 /** 게시글 조회 및 조회수 증가 서비스 */
@@ -103,10 +97,7 @@ export const getBoardAndIncrementViews = async (
     throw new NotFoundError('게시글을 찾을 수 없습니다.');
   }
 
-  return {
-    ...board,
-    canLike
-  };
+  return { ...board, canLike };
 };
 
 /** 게시글 추천 등록 서비스 */
@@ -151,11 +142,7 @@ export const searchBoardsByTag = async (
     throw new NotFoundError('해당 해시태그를 가진 게시글을 찾을 수 없습니다.');
   }
 
-  return {
-    data: result,
-    total,
-    page
-  };
+  return { data: result, total, page };
 };
 
 /** 사용자 게시판 기록 조회 서비스 */
@@ -175,8 +162,5 @@ export const getUserBoardRecords = async (
     throw new NotFoundError('게시글 기록이 없습니다.');
   }
 
-  return {
-    records,
-    total
-  };
+  return { records, total };
 };

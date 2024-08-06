@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { CustomRequest, JwtPayload } from '../models/jwtModel';
-import { Unauthorized } from '../middlewares/error';
 
 // dotenv.config();
 

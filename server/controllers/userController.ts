@@ -17,14 +17,9 @@ import {
 import { CustomRequest } from '../models/jwtModel';
 import {
   createdUser,
-  selectedByEmail,
   selectedById,
   deleteUser
 } from '../repositories/userRepo';
-import axios from 'axios';
-import { userDto } from '../dtos/userDto';
-import { Iuser } from '../models/userModel';
-import { User } from '../entities/User';
 
 dotenv.config();
 

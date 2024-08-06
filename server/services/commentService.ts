@@ -16,7 +16,6 @@ import { selectedById } from '../repositories/userRepo';
 import { error } from 'console';
 import { BadRequest } from '../middlewares/error';
 import { Comment_like } from '../entities/comment_like';
-import { CommentByBoardId } from '../controllers/commentController';
 
 /** 새로운 댓글 정보 생성 */
 export const generateComment = async (

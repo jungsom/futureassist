@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { ValidationError as ClassValidatorError } from 'class-validator';
 
 export class HttpError extends Error {
   public readonly statuscode: number;

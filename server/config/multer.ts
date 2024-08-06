@@ -1,6 +1,5 @@
 import multer from 'multer';
 import path from 'path';
-import aws from 'aws-sdk';
 import { S3Client } from '@aws-sdk/client-s3';
 import multerS3 from 'multer-s3';
 import dotenv from 'dotenv';

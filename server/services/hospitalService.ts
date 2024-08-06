@@ -20,7 +20,6 @@ import {
 import { HospitalRecord } from '../entities/HospitalRecord';
 import { IHospital } from '../models/hospitalModel';
 import { BadRequest, NotFoundError } from '../middlewares/error';
-import { formatDateToMinute } from './utils';
 
 /** 시도 데이터 조회 서비스 */
 const sidoOrder = [
@@ -179,8 +178,5 @@ export const getHospitalRecordsByUserId = async (userId: number) => {
     throw new NotFoundError('저장된 병원 기록이 없습니다.');
   }
 
-  return records.map((record) => ({
-    ...record,
-    createdAt: formatDateToMinute(new Date(record.createdAt))
-  }));
+  return { records };
 };
