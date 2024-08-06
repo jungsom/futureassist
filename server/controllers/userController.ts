@@ -148,8 +148,8 @@ export async function profileImage(
     const userId = (req as CustomRequest).user_id;
     const image = (req.file as Express.MulterS3.File).location;
 
-    await generateProfileImage(userId, image);
-    return res.status(200).json({ message: '이미지가 변경되었습니다.' });
+    const user = await generateProfileImage(userId, image);
+    return res.status(200).json({ url: user.profile_image });
   } catch (err) {
     next(err);
   }

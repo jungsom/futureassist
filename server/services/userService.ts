@@ -118,7 +118,7 @@ export const changeUserInfo = async (userId: number, data: Iuser) => {
 
     return user;
   } catch (err) {
-    throw err;
+    throw new BadRequest('회원 정보 수정에 실패하였습니다.');
   }
 };
 
@@ -200,7 +200,7 @@ export const generateProfileImage = async (userId: number, data?: string) => {
     user.user_id = userId;
     user.profile_image = data;
 
-    await createdUser(user);
+    return await createdUser(user);
   } catch (err) {
     throw new BadRequest('이미지 업로드에 실패하였습니다.');
   }
