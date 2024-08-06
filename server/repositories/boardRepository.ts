@@ -161,3 +161,30 @@ export const searchBoardsByTagRepository = async (
 
   return { result, total: parseInt(total, 10) };
 };
+
+/** 사용자 게시판 기록 조회 리포지토리 */
+export const getUserBoardRecordsRepository = async (
+  userId: number,
+  page: number,
+  pageSize: number
+): Promise<{ records: Board[]; total: number }> => {
+  const offset = (page - 1) * pageSize;
+
+  const query = `
+    SELECT board_id, title, views, "createdAt"
+    FROM board
+    WHERE user_id = $1 AND "deletedAt" IS NULL
+    ORDER BY "createdAt" DESC
+    LIMIT $2 OFFSET $3
+  `;
+  const countQuery = `
+    SELECT COUNT(*) as total
+    FROM board
+    WHERE user_id = $1 AND "deletedAt" IS NULL
+  `;
+
+  const records = await datasource.query(query, [userId, pageSize, offset]);
+  const countResult = await datasource.query(countQuery, [userId]);
+
+  return { records, total: parseInt(countResult[0].total, 10) };
+};
