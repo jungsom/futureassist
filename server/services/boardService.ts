@@ -83,7 +83,7 @@ export const getAllBoards = async (
   return {
     data: boards.map((board) => ({
       ...board,
-      updatedAt: formatDateToMinute(new Date(board.updatedAt))
+      createdAt: formatDateToMinute(new Date(board.createdAt))
     })),
     total,
     currentPage: page,
@@ -107,7 +107,7 @@ export const getBoardAndIncrementViews = async (
 
   return {
     ...board,
-    updatedAt: formatDateToMinute(new Date(board.updatedAt)),
+    createdAt: formatDateToMinute(new Date(board.createdAt)),
     canLike
   };
 };
@@ -157,7 +157,7 @@ export const searchBoardsByTag = async (
   return {
     data: result.map((board) => ({
       ...board,
-      updatedAt: formatDateToMinute(new Date(board.updatedAt))
+      createdAt: formatDateToMinute(new Date(board.createdAt))
     })),
     total,
     page
