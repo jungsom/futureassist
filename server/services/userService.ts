@@ -108,12 +108,9 @@ export const checkEmailwithPw = async (data: Iuser) => {
 /** 기존 회원 정보 생성 */
 export const changeUserInfo = async (userId: number, data: Iuser) => {
   try {
-    const hashedPassword = await generatePassword(data.password);
-
     const user = new User();
     user.user_id = userId;
     user.name = data.name;
-    user.password = hashedPassword;
     user.birth_year = data.birth_year;
 
     return user;
