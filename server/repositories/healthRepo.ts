@@ -12,30 +12,19 @@ export const createHealthRecord = async (record: HealthRecords) => {
 };
 
 /** user_id로 전체 건강정보 조회 */
-export const selectHealthRecord = async (
-  userId: number,
-  from?: Date,
-  to?: Date
-) => {
+export const selectHealthRecord = async (userId: number) => {
   try {
-    let query = `
+    const result = await datasource.query(
+      `
       SELECT health_id, height, weight, bloodsugar, cholesterol, bloodpressure,      
       TO_CHAR(created_at, 'YYYY-MM-DD') as created_at,
       TO_CHAR(updated_at, 'YYYY-MM-DD') as updated_at
       FROM "health_records"
-      WHERE user_id = $1`;
-
-    if (from && to) {
-      query += ` AND created_at >= $2 AND created_at <= $3`;
-    }
-
-    query += ` ORDER BY created_at DESC`;
-
-    const result =
-      from && to
-        ? await datasource.query(query, [userId, from, to])
-        : await datasource.query(query, [userId]);
-
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      LIMIT 30`,
+      [userId]
+    );
     return result;
   } catch (err) {
     throw err;

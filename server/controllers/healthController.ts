@@ -50,12 +50,8 @@ export const HealthRecordByUserId = async (
   next: NextFunction
 ) => {
   const userId = (req as CustomRequest).user_id;
-  const { from, to } = req.query;
 
-  const fromDate = from ? new Date(from as string) : undefined;
-  const toDate = to ? new Date(to as string) : undefined;
-
-  const healthRecord = await selectHealthRecord(userId, fromDate, toDate);
+  const healthRecord = await selectHealthRecord(userId);
 
   return res.status(200).json({ data: healthRecord });
 };
