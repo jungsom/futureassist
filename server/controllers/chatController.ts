@@ -40,7 +40,7 @@ export async function getChat(req: Request, res: Response, next: NextFunction) {
             }
         } 
         else {
-            response = await axios.post(`${chatURL}/api/chat`, { 
+            response = await axios.post(`${chatURL}/api/chatbot`, { 
                 input, userId
             });
             const { disease, department, saved } = response.data;

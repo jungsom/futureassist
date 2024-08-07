@@ -7,7 +7,7 @@ import uvicorn
 
 app = FastAPI()
 
-app.include_router(chatRoute.router, prefix="/api", tags=["chat"])
+app.include_router(chatRoute.router, prefix="/api", tags=["chatbot"])
 
 # if __name__ == '__main__':
 #     import uvicorn

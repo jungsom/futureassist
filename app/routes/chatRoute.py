@@ -20,7 +20,7 @@ medi_noun = csv2df(medipath)
 okt = Okt()
 model, tokenizer, device = loadModel(modelpath)
 
-@router.post("/chat")
+@router.post("/chatbot")
 async def answer(request: Request):
     input_data = await request.json()
     input = input_data.get('input')
