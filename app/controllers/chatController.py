@@ -1,16 +1,38 @@
-from app.services.chatService import calculate_score, predict, classify_disease
+import logging
+from app.services.chatService import calculate_score, predict, classify_disease, chat_with_gpt
 from app.models.answerModel import Answer
+import openai
+from dotenv import load_dotenv
+import os
 
-def chatAnswer(input, a2d, daily_noun, medi_noun, okt, model, tokenizer, device):
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# 전체 로깅 설정
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+
+# app.controllers.chatController 로거 설정
+chat_controller_logger = logging.getLogger('app.controllers.chatController')
+chat_controller_handler = logging.FileHandler('chat.log')
+chat_controller_handler.setLevel(logging.INFO)
+chat_controller_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+chat_controller_logger.addHandler(chat_controller_handler)
+
+def chatAnswer(input, userid, a2d, medi_noun, okt, model, tokenizer, device):
     medi_score = calculate_score(okt, input, medi_noun, 5000, 1000)
-    daily_score = calculate_score(okt, input, daily_noun, 100, 10)
-    if (medi_score < 5 and daily_score < 5):
-        result = Answer(
-            type = 1
+    if (medi_score < 10):
+        response = chat_with_gpt(
+            prompt = input,
         )
-    elif (daily_score >= medi_score):
+        print(response)
         result = Answer(
-            type = 2
+            answer=response,
         )
     else:
         predicted_output = predict(input, model, tokenizer, device)
@@ -19,7 +41,11 @@ def chatAnswer(input, a2d, daily_noun, medi_noun, okt, model, tokenizer, device)
             disease = disease,
             department = department,
             answer = predicted_output,
-            type = 3
+            saved=True
         )
+    chat_controller_logger.info(f'UserID: {userid}')
+    chat_controller_logger.info(f'Input: {input}')
+    chat_controller_logger.info(f'Answer: {result.answer}')
+
     return result
 

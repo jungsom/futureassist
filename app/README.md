@@ -9,16 +9,20 @@ java 설치 후 환경설정 필요
 - [MAC] https://www.codeit.kr/tutorials/44/KoNLPy-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0-M1
 
 ### 서버 실행
-futureassist_server에서 다음 명령어 실행
+futureassist_server/app에서 다음 명령어 실행
 
-    pip install -r requirements.txt
+    python install_packages.py
 
-설치 완료 후, 다음 명령어로 서버 실행
+or
 
-    uvicorn app.main:app --reload
+    python3 install_packages.py
 
-## 모델 다운 방법
-### 1. Git LFS 설치   
+설치 완료 후, futureassist_serve/app에서 다음 명령어로 서버 실행
+
+    uvicorn main:app --reload
+
+## 모델 다운 방법(최초1번)
+### 1. Git LFS 설치
 * macOS
 
         brew install git-lfs
