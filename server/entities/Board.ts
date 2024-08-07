@@ -24,6 +24,9 @@ export class Board {
   @Column()
   user_name: string;
 
+  @Column({ nullable: true })
+  user_image?: string;
+
   @ManyToOne(() => User, (user) => user.boards)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   user: User;

@@ -13,6 +13,7 @@ export const saveBoardRepository = async (board: Board): Promise<Board> => {
   }
 
   board.user_name = user.name;
+  board.user_image = user.profile_image;
 
   const boardRepo = datasource.getRepository(Board);
   return await boardRepo.save(board);
@@ -51,7 +52,7 @@ export const getAllBoardsRepository = async (
 ): Promise<{ boards: Board[]; total: number }> => {
   const offset = (page - 1) * pageSize;
   const query = `
-    SELECT board_id, user_name, title, content, hashtag, views, likes,
+    SELECT board_id, user_name, user_image, title, content, hashtag, views, likes,
     TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
     FROM board
     WHERE "deletedAt" IS NULL
@@ -81,7 +82,7 @@ export const getBoardAndIncrementViewsRepository = async (
 
   // 게시글 조회
   const board = await boardRepo.query(
-    `SELECT board_id, user_name, title, content, hashtag, views, likes,
+    `SELECT board_id, user_name, user_image, title, content, hashtag, views, likes,
      TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
      FROM board
      WHERE board_id = $1
@@ -145,7 +146,7 @@ export const searchBoardsByTagRepository = async (
   offset: number
 ): Promise<{ result: Board[]; total: number }> => {
   const query = `
-    SELECT board_id, user_name, title, content, hashtag, views, likes,
+    SELECT board_id, user_name, user_image, title, content, hashtag, views, likes,
     TO_CHAR("createdAt", 'YYYY-MM-DD HH24:MI') as "createdAt"
     FROM board
     WHERE hashtag LIKE $1 AND "deletedAt" IS NULL

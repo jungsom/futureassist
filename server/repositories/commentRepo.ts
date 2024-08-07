@@ -16,7 +16,7 @@ export const createComment = async (comment: Comment) => {
 export const selectByBoardId = async (userId: number, boardId: number) => {
   try {
     const result = await datasource.query(
-      `SELECT a.comment_id, c.name as user_name, a.content, 
+      `SELECT a.comment_id, c.name as user_name, c.profile_image as user_image, a.content, 
       TO_CHAR(a.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
       TO_CHAR(a.updated_at, 'YYYY-MM-DD HH24:MI') as updated_at,
       NOT EXISTS (
