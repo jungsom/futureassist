@@ -30,7 +30,6 @@ def chatAnswer(input, userid, a2d, medi_noun, okt, model, tokenizer, device):
         response = chat_with_gpt(
             prompt = input,
         )
-        print(response)
         result = Answer(
             answer=response,
         )
@@ -48,4 +47,3 @@ def chatAnswer(input, userid, a2d, medi_noun, okt, model, tokenizer, device):
     chat_controller_logger.info(f'Answer: {result.answer}')
 
     return result
-
