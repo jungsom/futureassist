@@ -4,14 +4,23 @@ import { IHospitalReccomendation } from '../models/chatModel';
 import { chatRequire } from '../models/chatModel'
 import { CreateChatDTO } from '../dtos/chatDto';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import https from 'https';
 dotenv.config();
 const chatURL = process.env.CHAT_URL
 const baseURL = process.env.BASE_URL
 
+const httpsAgent = new https.Agent({
+    cert: fs.readFileSync('/home/elice/kdt-ai-10-team02.elicecoding.com/certificate.crt'),
+    key: fs.readFileSync('/home/elice/kdt-ai-10-team02.elicecoding.com/private.key'),
+    ca: fs.readFileSync('/home/elice/kdt-ai-10-team02.elicecoding.com/ca_bundle.crt')
+  });
 
 export async function getHospitalRecommendation(sido_addr: string, sigu_addr: string, department: string) {
     if (sido_addr && sigu_addr && department) {
-        const response = await axios.get(`${baseURL}/api/hospital/search?sido_addr=${sido_addr}&sigu_addr=${sigu_addr}&department=${department}&pageSize=3`);
+        const response = await axios.get(`${baseURL}/api/hospital/search?sido_addr=${sido_addr}&sigu_addr=${sigu_addr}&department=${department}&pageSize=3`, {
+            httpsAgent
+        });
         const processedData: IHospitalReccomendation[] = response.data.data.map((item: any) => ({
             name: item.name,
             telno: item.telno,
@@ -35,6 +44,8 @@ export async function getHospitalRecommendation(sido_addr: string, sigu_addr: st
 export async function handleChatInput(input: string, userId: number) {
     const response = await axios.post(`${chatURL}/api/chatbot`, { 
         input, userId
+    }, {
+        httpsAgent
     });
     const { disease, department, saved } = response.data;
 
