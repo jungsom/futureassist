@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // 라우트 경로 설정
-app.use('/auth', verifyAccessToken, (req, res, next) => {
+app.use('/api/auth', verifyAccessToken, (req, res, next) => {
   res.status(200).json('토큰 인증에 성공하였습니다.');
 });
 app.use('/api/user', userRouter);
