@@ -22,13 +22,20 @@ model, tokenizer, device = loadModel(modelpath)
 
 @router.post("/chat")
 async def answer(request: Request):
-    input_data = await request.json()
-    input = input_data.get('input')
-    userId = input_data.get('userId')
     try:
+        input_data = await request.json()
+        input = input_data.get('input')
+        userId = input_data.get('userId')
+        
+        if input is None or userId is None:
+            raise HTTPException(status_code=400, detail="Invalid input data: 'input' and 'userId' are required")
+
         result = chatAnswer(input, userId, a2d, medi_noun, okt, model, tokenizer, device)
         return result
+
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException as e:
+        raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")

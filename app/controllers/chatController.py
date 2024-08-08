@@ -1,12 +1,13 @@
 import logging
 from app.services.chatService import calculate_score, predict, classify_disease, chat_with_gpt
 from app.models.answerModel import Answer
-import openai
 from dotenv import load_dotenv
-import os
+import openai
+from app.utils.config import OPENAI_API_KEY
 
+openai.api_key = OPENAI_API_KEY
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 # 전체 로깅 설정
 logging.basicConfig(
