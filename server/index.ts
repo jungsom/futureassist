@@ -22,12 +22,6 @@ const port = process.env.PORT || 4000;
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 미들웨어 설정
-app.use(
-  cors({
-    origin: 'http://localhost:4000',
-    credentials: true
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
