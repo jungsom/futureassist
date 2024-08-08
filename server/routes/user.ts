@@ -7,7 +7,8 @@ import {
   withDraw,
   kakaoLogin,
   profileImage,
-  UserByUserId
+  UserByUserId,
+  authorizeKakao
 } from '../controllers/userController';
 import { verifyAccessToken } from '../middlewares/jwt';
 import { validationMiddleware } from '../middlewares/validation';
@@ -19,7 +20,8 @@ const userRouter = Router();
 userRouter.get('/', verifyAccessToken, UserByUserId);
 userRouter.post('/register', validationMiddleware(registerDTO), register);
 userRouter.post('/login', validationMiddleware(loginDTO), login);
-userRouter.get('/kakao', kakaoLogin);
+userRouter.get('/kakao', authorizeKakao);
+userRouter.get('/oauth/callback/kakao', kakaoLogin);
 userRouter.get('/logout', verifyAccessToken, logout);
 userRouter.post(
   '/upload',

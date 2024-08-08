@@ -116,6 +116,23 @@ export async function withDraw(
   }
 }
 
+// 카카오 인가코드 발급
+export const authorizeKakao = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    return res
+      .status(302)
+      .redirect(
+        `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_RESTAPI_KEY}&redirect_uri=${process.env.REDIRECT_URL}`
+      );
+  } catch (err) {
+    next(err);
+  }
+};
+
 // 카카오 액세스 토큰 발급
 export async function kakaoLogin(
   req: Request,
@@ -128,7 +145,7 @@ export async function kakaoLogin(
     const jwtToken = await kakaoToJwt(res, kakaoToken);
     setCookie(res, 'token', jwtToken);
 
-    return res.status(201).json({ message: '카카오 로그인이 완료되었습니다.' });
+    return res.redirect(process.env.CLIENT_URL as string);
   } catch (err) {
     next(err);
   }
