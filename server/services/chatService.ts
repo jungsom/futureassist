@@ -4,14 +4,13 @@ import { IHospitalReccomendation } from '../models/chatModel';
 import { chatRequire } from '../models/chatModel';
 import { CreateChatDTO } from '../dtos/chatDto';
 import dotenv from 'dotenv';
-import fs from 'fs';
 import https from 'https';
 dotenv.config();
 const chatURL = process.env.CHAT_URL;
 const baseURL = process.env.BASE_URL;
 
 const httpsAgent = new https.Agent({
-  rejectUnauthorized: false
+    rejectUnauthorized: false
 });
 
 export async function getHospitalRecommendation(
@@ -55,17 +54,12 @@ export async function getHospitalRecommendation(
 }
 
 export async function handleChatInput(input: string, userId: number) {
-  const response = await axios.post(
-    `${chatURL}/api/chatbot`,
-    {
-      input,
-      userId
-    },
-    {
-      httpsAgent
-    }
-  );
-  const { disease, department, saved } = response.data;
+    const response = await axios.post(`${chatURL}/fast/chat`, { 
+        input, userId
+    }, {
+        httpsAgent
+    });
+    const { disease, department, saved } = response.data;
 
   if (saved) {
     const chatData: CreateChatDTO = { disease, department, user_id: userId };

@@ -70,5 +70,4 @@ def chat_with_gpt(prompt):
         max_tokens=256,
         temperature=0.3
     )
-    # return response
     return response.choices[0].message['content'].strip()

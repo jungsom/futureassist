@@ -6,4 +6,4 @@ from app.routes import chatRoute
 
 app = FastAPI()
 
-app.include_router(chatRoute.router, prefix="/api", tags=["chatbot"])
+app.include_router(chatRoute.router, prefix="/fast", tags=["chatbot"])
