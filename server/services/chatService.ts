@@ -33,7 +33,7 @@ export async function getHospitalRecommendation(
         addr: item.addr
       })
     );
-    return processedData;
+    return {answer : processedData};
   } else {
     if (!sido_addr) {
       return { answer: '시/도를 입력해 주세요.', sido: chatRequire.sido };
