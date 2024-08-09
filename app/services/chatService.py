@@ -1,6 +1,8 @@
 import torch
 import requests
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def calculate_score(okt, input_sentence, df, c1, c2):
     input_nouns = okt.nouns(input_sentence)
@@ -74,10 +76,10 @@ def chat_with_gpt(prompt):
         "max_tokens": 256,
         "temperature": 0.5
     }
-
     try:
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
+        print(response)
         return response.json()['choices'][0]['message']['content'].strip()
     except requests.exceptions.HTTPError as e:
         error_message = f"HTTP error occurred: {e}"
